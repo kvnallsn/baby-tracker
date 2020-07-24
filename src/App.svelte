@@ -39,6 +39,7 @@
               <th class="header">Time</th>
               <th class="header">Condition</th>
               <th class="header">Brand</th>
+              <th class="header">Leakage</th>
               <th class="header">Notes</th>
             </tr>
           </thead>
@@ -53,6 +54,7 @@
                 </td>
                 <td class="cell">{event.condition}</td>
                 <td class="cell">Unknown</td>
+                <td class="cell" />
                 <td class="cell" />
               </tr>
             {/each}

@@ -6,6 +6,8 @@
   import Drawer from "../components/Drawer.svelte";
   import Select from "../components/Select.svelte";
   import RadioGroup from "../components/RadioGroup.svelte";
+  import Text from "../components/input/Text.svelte";
+  import TextArea from "../components/input/TextArea.svelte";
 
   // props
   export let open: boolean = false;
@@ -33,6 +35,11 @@
     { value: DiaperCondition.Bowel, text: "BM" },
   ];
 
+  let diaperLeakages = [
+    { value: "no", text: "No Leakage" },
+    { value: "yes", text: "Leakage" },
+  ];
+
   let nursingSides = [
     { value: "left", text: "Left" },
     { value: "right", text: "Right" },
@@ -51,6 +58,7 @@
 
   // diaper mutable data
   let diaperCondition = diaperConditions[0];
+  let diaperLeakage = diaperLeakages[0];
 
   // nursing mutable data
   let nursingSide = nursingSides[0];
@@ -125,29 +133,38 @@
       options={categories}
       on:selected={(e) => (category = e.detail)} />
 
-    <div>
-      {#if category.id == Category.Diaper}
-        <RadioGroup
-          label="Condition"
-          group="diaperstatus"
-          options={diaperConditions}
-          bind:value={diaperCondition} />
-      {:else if category.id == Category.Nursing}
-        <RadioGroup
-          label="Side"
-          group="nursingside"
-          options={nursingSides}
-          bind:value={nursingSide} />
-      {:else if category.id == Category.Sleep}
-        <div class="text-base sm:text-sm">
-          Little one fell asleep at {date.toLocaleTimeString('en-US')}
-        </div>
-      {:else if category.id == Category.Awake}
-        <div class="text-base sm:text-sm">
-          Little one woke up at {date.toLocaleTimeString('en-US')}
-        </div>
-      {/if}
-    </div>
+    {#if category.id == Category.Diaper}
+      <RadioGroup
+        label="Condition"
+        group="diaperstatus"
+        options={diaperConditions}
+        bind:value={diaperCondition} />
+
+      <!-- add: brand, size, leakage, notes -->
+      <Text id="brand" label="Brand" placeholder="Huggies, Pampers, etc." />
+
+      <RadioGroup
+        label="Leakage"
+        group="diaperleakage"
+        options={diaperLeakages}
+        bind:value={diaperLeakage} />
+    {:else if category.id == Category.Nursing}
+      <RadioGroup
+        label="Side"
+        group="nursingside"
+        options={nursingSides}
+        bind:value={nursingSide} />
+    {:else if category.id == Category.Sleep}
+      <div class="text-base sm:text-sm">
+        Little one fell asleep at {date.toLocaleTimeString('en-US')}
+      </div>
+    {:else if category.id == Category.Awake}
+      <div class="text-base sm:text-sm">
+        Little one woke up at {date.toLocaleTimeString('en-US')}
+      </div>
+    {/if}
+
+    <TextArea id="notes" label="Notes" placeholder="..." />
   </div>
 
 </Drawer>

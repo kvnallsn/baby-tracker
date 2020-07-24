@@ -29,7 +29,13 @@
 </script>
 
 <style>
+  .min-h-16 {
+    min-height: 4rem;
+  }
 
+  .min-h-24 {
+    min-height: 6rem;
+  }
 </style>
 
 {#if open}
@@ -68,7 +74,8 @@
             class="h-full flex flex-col space-y-6 bg-white shadow-xl
             overflow-y-scroll">
             <header
-              class="flex flex-col justify-center h-24 bg-red-700 px-4 sm:px-6">
+              class="flex flex-col justify-center min-h-24 bg-red-700 px-4
+              sm:px-6">
               <h2 class="text-lg leading-7 font-medium text-white">{title}</h2>
               <p class="text-sm text-gray-300">{subtitle}</p>
             </header>
@@ -77,8 +84,8 @@
               <slot />
             </div>
             <footer
-              class="flex justify-end items-center h-16 border-t border-gray-300
-              shadow-sm space-x-4 px-4 sm:px-6">
+              class="flex justify-end items-center min-h-16 border-t
+              border-gray-300 shadow-sm space-x-4 px-4 sm:px-6">
               <Button text="Cancel" on:click={cancel} />
               <Button text="Create" color="blue" on:click={success} />
             </footer>
