@@ -6,10 +6,6 @@
   import Select from "./components/Select.svelte";
   import RadioGroup from "./components/RadioGroup.svelte";
 
-  // css imports
-  import "flatpickr/dist/flatpickr.css";
-  import "flatpickr/dist/themes/material_red.css";
-
   // props
   export let open: boolean = false;
 
@@ -19,13 +15,19 @@
   const categories = [
     { id: 0, title: "Diaper Change" },
     { id: 1, title: "Nursing" },
-    { id: 3, title: "Sleep" },
+    { id: 2, title: "Sleep" },
   ];
 
   let diaperConditions = [
     { value: "dry", text: "Dry" },
     { value: "wet", text: "Wet" },
     { value: "poop", text: "BM" },
+  ];
+
+  let nursingSides = [
+      { value: "left", text: "Left" },
+      { value: "right", text: "Right" },
+      { value: "both", text: "Both" }
   ];
 
   let flatpickrOptions = {
@@ -40,6 +42,9 @@
 
   // diaper mutable data
   let diaperCondition = diaperConditions[0];
+
+  // nursing mutable data
+  let nursingSide = nursingSides[0];
 
   function createRecordSuccess() {
     console.log(category);
@@ -58,7 +63,8 @@
 </script>
 
 <style>
-
+@import "flatpickr/dist/flatpickr.min.css";
+@import "flatpickr/dist/themes/material_red.css";
 </style>
 
 <Drawer
@@ -91,10 +97,14 @@
           options={diaperConditions}
           bind:value={diaperCondition} />
       {:else if category.id == 1}
-        Nursing
+        <RadioGroup
+            label="Side"
+            group="nursingside"
+            options={nursingSides}
+            bind:value={nursingSide} />
       {:else if category.id == 2}
-        Tummy
-      {:else if category.id == 3}Sleep{:else}Unknown{/if}
+        <div class="text-base sm:text-sm">Litte one fell asleep at {date.toLocaleTimeString('en-US')}</div>
+      {:else}Unknown{/if}
     </div>
   </div>
 

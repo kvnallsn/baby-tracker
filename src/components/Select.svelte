@@ -1,8 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import SelectItem from "./SelectItem.svelte";
-  import App from "../App.svelte";
-  import Button from "./Button.svelte";
 
   // props
   export let title: string = "Pick one";
