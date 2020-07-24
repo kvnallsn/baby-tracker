@@ -1,0 +1,38 @@
+{
+  "name": "svelte-app",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public",
+    "validate": "svelte-check"
+  },
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^2.3.0",
+    "@rollup/plugin-commonjs": "^12.0.0",
+    "@rollup/plugin-node-resolve": "^8.0.0",
+    "@rollup/plugin-typescript": "^4.0.0",
+    "@shoelace-style/shoelace": "^2.0.0-beta.7",
+    "@tailwindcss/ui": "^0.4.0",
+    "@tsconfig/svelte": "^1.0.0",
+    "luxon": "^1.24.1",
+    "postcss": "^7.0.32",
+    "postcss-load-config": "^2.1.0",
+    "rollup": "^2.3.4",
+    "rollup-plugin-css-only": "^2.1.0",
+    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-svelte": "^5.0.3",
+    "rollup-plugin-terser": "^5.1.2",
+    "svelte": "^3.0.0",
+    "svelte-check": "^0.1.0",
+    "svelte-flatpickr": "^2.4.0",
+    "svelte-preprocess": "^4.0.0",
+    "tailwindcss": "^1.5.2",
+    "tslib": "^2.0.0",
+    "typescript": "^3.9.3"
+  },
+  "dependencies": {
+    "flatpickr": "^4.6.3",
+    "sirv-cli": "^0.4.4"
+  }
+}
