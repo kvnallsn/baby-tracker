@@ -50,19 +50,21 @@
         aria-haspopup="listbox"
         aria-expanded="true"
         aria-labelledby="listbox-label"
-        class="cursor-default relative w-full rounded-md border border-gray-300
-        bg-white pl-3 pr-10 py-2 text-left focus:outline-none
+        class="group cursor-pointer relative w-full rounded-md border
+        border-gray-300 bg-white pl-3 pr-10 py-2 text-left focus:outline-none
         focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out
-        duration-150 sm:text-sm sm:leading-5">
+        duration-150 sm:text-sm sm:leading-5 hover:bg-red-700">
         <div class="flex items-center space-x-3">
           <!-- selected item -->
-          <span class="block truncate">{selectedOption.title}</span>
+          <span class="block truncate group-hover:text-white">
+            {selectedOption.title}
+          </span>
         </div>
         <span
           class="absolute inset-y-0 right-0 flex items-center pr-2
           pointer-events-none">
           <svg
-            class="h-5 w-5 text-gray-400"
+            class="h-5 w-5 text-gray-400 group-hover:text-white"
             viewBox="0 0 20 20"
             fill="none"
             stroke="currentColor">
@@ -78,7 +80,9 @@
 
     <!-- Select popover, show/hide based on select state. -->
     {#if open}
-      <div class="absolute mt-1 w-full rounded-md border border-red-600 bg-white shadow-lg z-10">
+      <div
+        class="absolute mt-1 w-full rounded-md border border-red-600 bg-white
+        shadow-lg z-10">
         <ul
           tabindex="-1"
           role="listbox"

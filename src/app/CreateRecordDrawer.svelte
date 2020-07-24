@@ -79,8 +79,13 @@
       <span class="block text-sm leading-5 font-medium text-gray-700">
         Date and Time
       </span>
-      <div class="border border-gray-200 p-2 rounded">
-        <Flatpickr options={flatpickrOptions} bind:value={date} />
+      <div
+        class="group border border-gray-200 p-2 rounded hover:bg-red-700
+        cursor-pointer">
+        <Flatpickr
+          options={flatpickrOptions}
+          bind:value={date}
+          class="group-hover:bg-red-700 group-hover:text-white cursor-pointer" />
       </div>
     </div>
     <Select
