@@ -12,10 +12,18 @@
   const dispatch = createEventDispatcher();
 
   // data
+  enum Category {
+    Diaper = 1,
+    Nursing,
+    Sleep,
+    Awake,
+  }
+
   const categories = [
-    { id: 0, title: "Diaper Change" },
-    { id: 1, title: "Nursing" },
-    { id: 2, title: "Sleep" },
+    { id: Category.Diaper, title: "Diaper Change" },
+    { id: Category.Nursing, title: "Nursing" },
+    { id: Category.Sleep, title: "Sleep" },
+    { id: Category.Awake, title: "Awake" },
   ];
 
   let diaperConditions = [
@@ -94,23 +102,27 @@
       on:selected={(e) => (category = e.detail)} />
 
     <div>
-      {#if category.id == 0}
+      {#if category.id == Category.Diaper}
         <RadioGroup
           label="Condition"
           group="diaperstatus"
           options={diaperConditions}
           bind:value={diaperCondition} />
-      {:else if category.id == 1}
+      {:else if category.id == Category.Nursing}
         <RadioGroup
           label="Side"
           group="nursingside"
           options={nursingSides}
           bind:value={nursingSide} />
-      {:else if category.id == 2}
+      {:else if category.id == Category.Sleep}
         <div class="text-base sm:text-sm">
-          Litte one fell asleep at {date.toLocaleTimeString('en-US')}
+          Little one fell asleep at {date.toLocaleTimeString('en-US')}
         </div>
-      {:else}Unknown{/if}
+      {:else if category.id == Category.Awake}
+        <div class="text-base sm:text-sm">
+          Little one woke up at {date.toLocaleTimeString('en-US')}
+        </div>
+      {/if}
     </div>
   </div>
 
