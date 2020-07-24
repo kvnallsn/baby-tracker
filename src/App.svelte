@@ -1,7 +1,7 @@
 <script lang="ts">
-  import CreateRecordDrawer from "./CreateRecordDrawer.svelte";
+  import CreateRecordDrawer from "./app/CreateRecordDrawer.svelte";
   import Navbar from "./components/Navbar.svelte";
-  import Tailwind from "./components/Tailwind.svelte";
+  import GlobalStyle from "./GlobalStyle.svelte";
 
   let alertVisible: boolean = false;
   let drawerVisible: boolean = true;
@@ -13,7 +13,7 @@
   }
 </style>
 
-<Tailwind />
+<GlobalStyle />
 <Navbar on:showCreateRecord={(e) => (drawerVisible = true)} />
 <CreateRecordDrawer
   open={drawerVisible}

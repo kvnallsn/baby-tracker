@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public",
+    "start": "sirv public -H 0.0.0.0",
     "validate": "svelte-check"
   },
   "devDependencies": {
@@ -17,6 +17,7 @@
     "@tsconfig/svelte": "^1.0.0",
     "luxon": "^1.24.1",
     "postcss": "^7.0.32",
+    "postcss-import": "^12.0.1",
     "postcss-load-config": "^2.1.0",
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^2.1.0",

@@ -2,9 +2,9 @@
   // imports
   import { createEventDispatcher, onMount } from "svelte";
   import Flatpickr from "svelte-flatpickr";
-  import Drawer from "./components/Drawer.svelte";
-  import Select from "./components/Select.svelte";
-  import RadioGroup from "./components/RadioGroup.svelte";
+  import Drawer from "../components/Drawer.svelte";
+  import Select from "../components/Select.svelte";
+  import RadioGroup from "../components/RadioGroup.svelte";
 
   // props
   export let open: boolean = false;
@@ -25,15 +25,15 @@
   ];
 
   let nursingSides = [
-      { value: "left", text: "Left" },
-      { value: "right", text: "Right" },
-      { value: "both", text: "Both" }
+    { value: "left", text: "Left" },
+    { value: "right", text: "Right" },
+    { value: "both", text: "Both" },
   ];
 
   let flatpickrOptions = {
     dateFormat: "M d, Y @ h:i K",
     enableTime: true,
-    minuteIncrement: 1
+    minuteIncrement: 1,
   };
 
   // mutable data
@@ -63,8 +63,7 @@
 </script>
 
 <style>
-@import "flatpickr/dist/flatpickr.min.css";
-@import "flatpickr/dist/themes/material_red.css";
+
 </style>
 
 <Drawer
@@ -98,12 +97,14 @@
           bind:value={diaperCondition} />
       {:else if category.id == 1}
         <RadioGroup
-            label="Side"
-            group="nursingside"
-            options={nursingSides}
-            bind:value={nursingSide} />
+          label="Side"
+          group="nursingside"
+          options={nursingSides}
+          bind:value={nursingSide} />
       {:else if category.id == 2}
-        <div class="text-base sm:text-sm">Litte one fell asleep at {date.toLocaleTimeString('en-US')}</div>
+        <div class="text-base sm:text-sm">
+          Litte one fell asleep at {date.toLocaleTimeString('en-US')}
+        </div>
       {:else}Unknown{/if}
     </div>
   </div>
