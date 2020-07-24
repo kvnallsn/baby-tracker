@@ -2,6 +2,7 @@
   // imports
   import { createEventDispatcher, onMount } from "svelte";
   import Flatpickr from "svelte-flatpickr";
+  import { state, DiaperCondition } from "../stores.ts";
   import Drawer from "../components/Drawer.svelte";
   import Select from "../components/Select.svelte";
   import RadioGroup from "../components/RadioGroup.svelte";
@@ -27,9 +28,9 @@
   ];
 
   let diaperConditions = [
-    { value: "dry", text: "Dry" },
-    { value: "wet", text: "Wet" },
-    { value: "poop", text: "BM" },
+    { value: DiaperCondition.Dry, text: "Dry" },
+    { value: DiaperCondition.Wet, text: "Wet" },
+    { value: DiaperCondition.Bowel, text: "BM" },
   ];
 
   let nursingSides = [
@@ -57,8 +58,31 @@
   function createRecordSuccess() {
     console.log(category);
     console.log(date);
-    console.log(diaperCondition);
-    //dispatch("close");
+
+    switch (+category.id) {
+      case Category.Diaper:
+        console.log(diaperCondition);
+        state.addDiaperEvent({
+          datetime: date,
+          condition: diaperCondition.value,
+        });
+        break;
+
+      case Category.Nursing:
+        console.log(nursingSide);
+        break;
+
+      case Category.Sleep:
+        break;
+
+      case Category.Awake:
+        break;
+
+      default:
+        break;
+    }
+
+    dispatch("close");
   }
 
   function createRecordCancelled() {
