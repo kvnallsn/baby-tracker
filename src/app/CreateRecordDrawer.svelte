@@ -1,6 +1,7 @@
 <script lang="ts">
   // npm imports
   import { createEventDispatcher, onMount } from "svelte";
+  import { createForm } from "svelte-forms-lib";
   import Flatpickr from "svelte-flatpickr";
 
   // state imports
@@ -74,22 +75,47 @@
   $: date = $state.date;
 
   // mutable data
-  let category = categories[0];
-  let notes = "";
+  let category;
+  let notes;
+  let errors;
 
   // diaper mutable data
-  let diaperCondition = diaperConditions[0];
-  let diaperLeakage = diaperLeakages[0];
-  let diaperBrand = "";
-  let diaperSize = 0;
+  let diaperCondition;
+  let diaperLeakage;
+  let diaperBrand;
+  let diaperSize;
 
   // nursing mutable data
-  let nursingSource = nursingSources[0];
-  let nursingSide = undefined;
+  let nursingSource;
+  let nursingSide;
+
+  function resetMutableData() {
+    errors = [];
+    category = categories[0];
+    notes = "";
+
+    diaperCondition = diaperConditions[0];
+    diaperLeakage = diaperLeakages[0];
+    diaperBrand = "";
+    diaperSize = 0;
+
+    // nursing mutable data
+    nursingSource = nursingSources[0];
+    nursingSide = undefined;
+  }
 
   function createRecordSuccess() {
+    let success = false;
+    // validate all fields!
     switch (+category.id) {
       case Category.Diaper:
+        // validate diaper fields
+        if (diaperBrand.length == 0) {
+          errors.push("brand required");
+          console.log(errors.length);
+          break;
+        }
+
         state.addDiaperEvent({
           datetime: date,
           condition: diaperCondition.value,
@@ -98,33 +124,47 @@
           leakage:diaperLeakage.value,
           notes: notes,
         });
+
+        success = true;
         break;
 
       case Category.Nursing:
+        // validate nursing fields
         state.addNursingEvent({
           datetime: date,
           source: nursingSource.value,
           side: nursingSide.value,
           notes: notes,
         });
+
+        success = true;
         break;
 
       case Category.Sleep:
+        success = true;
         break;
 
       case Category.Awake:
+        success = true;
         break;
 
       default:
         break;
     }
 
-    dispatch("close");
+    if (success) {
+      resetMutableData();
+      dispatch("close");
+    }
   }
 
   function createRecordCancelled() {
     dispatch("close");
   }
+
+  onMount(async () => {
+    resetMutableData();
+  });
 </script>
 
 <style>
@@ -140,6 +180,13 @@
   subtitle="What did little do?">
 
   <div class="h-full flex flex-col space-y-6 bg-white overflow-y-scroll">
+    {#if errors.length > 0}
+      <div class="h-24 flex space-y-2 w-full bg-red-900">
+        {#each errors as error}
+          <span class="text-sm">{error}</span>
+        {/each}
+      </div>
+    {/if}
     <div>
       <span class="block text-sm leading-5 font-medium text-gray-700">
         Date and Time
