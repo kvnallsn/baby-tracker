@@ -1,32 +1,35 @@
 // svelte stores
 import { writable } from "svelte/store";
-
-export enum DiaperCondition {
-  Wet = "wet",
-  Dry = "dry",
-  Bowel = "bowel",
-}
-
-interface DiaperEvent {
-  datetime: Date,
-  condition: DiaperCondition;
-}
+import * as Diaper from "./stores/diaper";
+import * as Nursing from "./stores/nursing";
 
 interface State {
-  diapers: DiaperEvent[];
+  date: Date;
+  diapers: Diaper.Event[];
+  nursing: Nursing.Event[];
 }
 
 function createState() {
   const { subscribe, set, update } = writable({
-   diapers: []
+   date: new Date(Date.now()),
+   diapers: [],
+   nursing: [],
   } as State);
 
   return {
     subscribe,
-    addDiaperEvent: (e: DiaperEvent) => update(s => {
+    addDiaperEvent: (e: Diaper.Event) => update(s => {
       s.diapers.push(e);
       return s;
-    })
+    }),
+    addNursingEvent: (e: Nursing.Event) => update(s => {
+      s.nursing.push(e);
+      return s;
+    }),
+    now: () => update(s => {
+      s.date = new Date(Date.now());
+      return s;
+    }),
   }
 }
 

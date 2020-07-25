@@ -1,13 +1,20 @@
 <script lang="ts">
-  // imports
+  // npm imports
   import { createEventDispatcher, onMount } from "svelte";
   import Flatpickr from "svelte-flatpickr";
-  import { state, DiaperCondition } from "../stores.ts";
+
+  // state imports
+  import { state } from "../stores.ts";
+  import * as Diaper from "../stores/diaper.ts";
+  import * as Nursing from "../stores/nursing.ts";
+
+  // component imports
   import Drawer from "../components/Drawer.svelte";
   import Select from "../components/Select.svelte";
   import RadioGroup from "../components/RadioGroup.svelte";
   import Text from "../components/input/Text.svelte";
   import TextArea from "../components/input/TextArea.svelte";
+  import Number from "../components/input/Number.svelte";
 
   // props
   export let open: boolean = false;
@@ -30,20 +37,31 @@
   ];
 
   let diaperConditions = [
-    { value: DiaperCondition.Dry, text: "Dry" },
-    { value: DiaperCondition.Wet, text: "Wet" },
-    { value: DiaperCondition.Bowel, text: "BM" },
+    { value: Diaper.Condition.Dry, text: "Dry" },
+    { value: Diaper.Condition.Wet, text: "Wet" },
+    { value: Diaper.Condition.Bowel, text: "BM" },
   ];
 
   let diaperLeakages = [
-    { value: "no", text: "No Leakage" },
-    { value: "yes", text: "Leakage" },
+    { value: Diaper.Leakage.No, text: "No Leakage" },
+    { value: Diaper.Leakage.Yes, text: "Leakage" },
+    { value: Diaper.Leakage.Blowout, text: "Blowout" },
   ];
 
-  let nursingSides = [
-    { value: "left", text: "Left" },
-    { value: "right", text: "Right" },
-    { value: "both", text: "Both" },
+  let nursingSources = [
+    { value: Nursing.Source.Breast, text: "Breast" },
+    { value: Nursing.Source.Bottle, text: "Bottle" },
+  ];
+
+  let nursingBreastSides = [
+    { value: Nursing.Side.Left, text: "Left" },
+    { value: Nursing.Side.Right, text: "Right" },
+    { value: Nursing.Side.Both, text: "Both" },
+  ];
+
+  let nursingBottleTypes = [
+    { value: Nursing.Side.Formula, text: "Formula" },
+    { value: Nursing.Side.Pumped, text: "Pumped" },
   ];
 
   let flatpickrOptions = {
@@ -52,32 +70,43 @@
     minuteIncrement: 1,
   };
 
+  // reactive data
+  $: date = $state.date;
+
   // mutable data
   let category = categories[0];
-  let date = null;
+  let notes = "";
 
   // diaper mutable data
   let diaperCondition = diaperConditions[0];
   let diaperLeakage = diaperLeakages[0];
+  let diaperBrand = "";
+  let diaperSize = 0;
 
   // nursing mutable data
-  let nursingSide = nursingSides[0];
+  let nursingSource = nursingSources[0];
+  let nursingSide = undefined;
 
   function createRecordSuccess() {
-    console.log(category);
-    console.log(date);
-
     switch (+category.id) {
       case Category.Diaper:
-        console.log(diaperCondition);
         state.addDiaperEvent({
           datetime: date,
           condition: diaperCondition.value,
+          brand: diaperBrand,
+          size: diaperSize,
+          leakage:diaperLeakage.value,
+          notes: notes,
         });
         break;
 
       case Category.Nursing:
-        console.log(nursingSide);
+        state.addNursingEvent({
+          datetime: date,
+          source: nursingSource.value,
+          side: nursingSide.value,
+          notes: notes,
+        });
         break;
 
       case Category.Sleep:
@@ -96,10 +125,6 @@
   function createRecordCancelled() {
     dispatch("close");
   }
-
-  onMount(async () => {
-    date = new Date(Date.now());
-  });
 </script>
 
 <style>
@@ -140,8 +165,9 @@
         options={diaperConditions}
         bind:value={diaperCondition} />
 
-      <!-- add: brand, size, leakage, notes -->
-      <Text id="brand" label="Brand" placeholder="Huggies, Pampers, etc." />
+      <Text id="brand" label="Brand" placeholder="Huggies, Pampers, etc." bind:value={diaperBrand} />
+
+      <Number id="size" label="Size" placeholder="Diaper size (0, 1, 2, etc)" bind:value={diaperSize} />
 
       <RadioGroup
         label="Leakage"
@@ -150,10 +176,24 @@
         bind:value={diaperLeakage} />
     {:else if category.id == Category.Nursing}
       <RadioGroup
-        label="Side"
-        group="nursingside"
-        options={nursingSides}
-        bind:value={nursingSide} />
+        label="Source"
+        group="nursingsource"
+        options={nursingSources}
+        bind:value={nursingSource} />
+
+        {#if nursingSource.value === Nursing.Source.Breast }
+          <RadioGroup
+            label="Side"
+            group="nursingside"
+            options={nursingBreastSides}
+            bind:value={nursingSide} />
+        {:else}
+          <RadioGroup
+            label="Type"
+            group="nursingtype"
+            options={nursingBottleTypes}
+            bind:value={nursingSide} />
+        {/if}
     {:else if category.id == Category.Sleep}
       <div class="text-base sm:text-sm">
         Little one fell asleep at {date.toLocaleTimeString('en-US')}
@@ -164,7 +204,7 @@
       </div>
     {/if}
 
-    <TextArea id="notes" label="Notes" placeholder="..." />
+    <TextArea id="notes" label="Notes" placeholder="..." bind:value={notes} />
   </div>
 
 </Drawer>

@@ -6,6 +6,7 @@
   export let label: string;
   export let placeholder: string;
   export let rows: number = 5;
+  export let value: string;
 </script>
 
 <style>
@@ -20,5 +21,6 @@
     {id}
     {rows}
     {placeholder}
+    bind:value
     class="form-input block w-full pl-2 pr-2 sm:text-sm sm:leading-5" />
 </div>
