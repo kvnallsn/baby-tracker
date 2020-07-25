@@ -3,11 +3,14 @@
   import { createEventDispatcher, onMount } from "svelte";
   import { createForm } from "svelte-forms-lib";
   import Flatpickr from "svelte-flatpickr";
+  import * as yup from "yup";
 
   // state imports
   import { state } from "../stores.ts";
   import * as Diaper from "../stores/diaper.ts";
   import * as Nursing from "../stores/nursing.ts";
+
+  // Forms
 
   // component imports
   import Drawer from "../components/Drawer.svelte";
@@ -81,80 +84,76 @@
 
   // diaper mutable data
   let diaperCondition;
-  let diaperLeakage;
   let diaperBrand;
   let diaperSize;
+  let diaperLeakage;
 
   // nursing mutable data
   let nursingSource;
   let nursingSide;
 
+  // schemas
+  let diaperSizeSchema = yup.number().min(0).max(7).required();
+
   function resetMutableData() {
     errors = [];
-    category = categories[0];
+    category = Category.Diaper;
     notes = "";
 
-    diaperCondition = diaperConditions[0];
-    diaperLeakage = diaperLeakages[0];
+    // diaper mutable data
+    diaperCondition = Diaper.Condition.Dry;
     diaperBrand = "";
     diaperSize = 0;
+    diaperLeakage = Diaper.Leakage.No;
 
     // nursing mutable data
-    nursingSource = nursingSources[0];
+    nursingSource = Nursing.Source.Breast;
     nursingSide = undefined;
   }
 
-  function createRecordSuccess() {
-    let success = false;
-    // validate all fields!
-    switch (+category.id) {
-      case Category.Diaper:
-        // validate diaper fields
-        if (diaperBrand.length == 0) {
-          errors.push("brand required");
-          console.log(errors.length);
+  async function createRecordSuccess() {
+    try {
+      switch (+category) {
+        case Category.Diaper: {
+          const event = {
+            datetime: date,
+            condition: diaperCondition,
+            brand: diaperBrand,
+            size: diaperSize,
+            leakage: diaperLeakage,
+            notes: notes,
+          };
+
+          state.addDiaperEvent(Diaper.validate(event));
           break;
         }
 
-        state.addDiaperEvent({
-          datetime: date,
-          condition: diaperCondition.value,
-          brand: diaperBrand,
-          size: diaperSize,
-          leakage:diaperLeakage.value,
-          notes: notes,
-        });
+        case Category.Nursing: {
+          const event = {
+            datetime: date,
+            source: nursingSource,
+            side: nursingSide,
+            notes: notes,
+          };
 
-        success = true;
-        break;
+          state.addNursingEvent(Nursing.validate(event));
+          break;
+        }
 
-      case Category.Nursing:
-        // validate nursing fields
-        state.addNursingEvent({
-          datetime: date,
-          source: nursingSource.value,
-          side: nursingSide.value,
-          notes: notes,
-        });
+        case Category.Sleep:
+          break;
 
-        success = true;
-        break;
+        case Category.Awake:
+          break;
 
-      case Category.Sleep:
-        success = true;
-        break;
+        default:
+          break;
+      }
 
-      case Category.Awake:
-        success = true;
-        break;
-
-      default:
-        break;
-    }
-
-    if (success) {
       resetMutableData();
       dispatch("close");
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -203,49 +202,53 @@
     <Select
       title="Category"
       options={categories}
-      on:selected={(e) => (category = e.detail)} />
+      on:selected={(e) => (category = e.detail.id)} />
 
-    {#if category.id == Category.Diaper}
+    {#if category == Category.Diaper}
       <RadioGroup
         label="Condition"
-        group="diaperstatus"
         options={diaperConditions}
         bind:value={diaperCondition} />
 
-      <Text id="brand" label="Brand" placeholder="Huggies, Pampers, etc." bind:value={diaperBrand} />
+      <Text
+        id="brand"
+        label="Brand"
+        placeholder="Huggies, Pampers, etc."
+        bind:value={diaperBrand} />
 
-      <Number id="size" label="Size" placeholder="Diaper size (0, 1, 2, etc)" bind:value={diaperSize} />
+      <Number
+        id="size"
+        label="Size"
+        placeholder="Diaper size (0, 1, 2, etc)"
+        schema={diaperSizeSchema}
+        bind:value={diaperSize} />
 
       <RadioGroup
         label="Leakage"
-        group="diaperleakage"
         options={diaperLeakages}
         bind:value={diaperLeakage} />
-    {:else if category.id == Category.Nursing}
+    {:else if category == Category.Nursing}
       <RadioGroup
         label="Source"
-        group="nursingsource"
         options={nursingSources}
         bind:value={nursingSource} />
 
-        {#if nursingSource.value === Nursing.Source.Breast }
+        {#if nursingSource === Nursing.Source.Breast }
           <RadioGroup
             label="Side"
-            group="nursingside"
             options={nursingBreastSides}
             bind:value={nursingSide} />
         {:else}
           <RadioGroup
-            label="Type"
-            group="nursingtype"
+            label="Contents"
             options={nursingBottleTypes}
             bind:value={nursingSide} />
         {/if}
-    {:else if category.id == Category.Sleep}
+    {:else if category == Category.Sleep}
       <div class="text-base sm:text-sm">
         Little one fell asleep at {date.toLocaleTimeString('en-US')}
       </div>
-    {:else if category.id == Category.Awake}
+    {:else if category == Category.Awake}
       <div class="text-base sm:text-sm">
         Little one woke up at {date.toLocaleTimeString('en-US')}
       </div>

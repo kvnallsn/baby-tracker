@@ -43,3 +43,25 @@ export interface Event {
   /** Any optional notes */
   notes: String;
 }
+
+export function validate(e: Event): Event {
+  let errors: string[] = [];
+
+  if (!e.condition) {
+    errors.push("Diaper condition must be defined");
+  }
+
+  if (e.size < 0 || e.size > 7) {
+    errors.push("Diaper size must be between 0 and 7");
+  }
+
+  if (!e.leakage) {
+    errors.push("Diaper leakage must be defined");
+  }
+
+  if (errors.length > 0) {
+    throw new Error(errors.join("\n"));
+  }
+
+  return e;
+}

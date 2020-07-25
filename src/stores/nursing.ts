@@ -41,3 +41,22 @@ export interface Event {
   /** Any optional notes */
   notes: String;
 }
+
+/** Schema we will valiate against */
+export function validate(e: Event): Event {
+  let errors: string[] = [];
+
+  if (e.source === undefined || e.source === null) {
+    errors.push("Source must be defined");
+  }
+
+  if (e.side === undefined || e.side === null) {
+    errors.push(`${e.source === Source.Bottle ? "Contents" : "Side"} must be defined`);
+  }
+
+  if (errors.length > 0) {
+    throw new Error(errors.join("\n"));
+  }
+
+  return e;
+}
