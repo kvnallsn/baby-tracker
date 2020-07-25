@@ -50,8 +50,6 @@
       bind:value
       on:change={validate}
       class="form-input block w-full pl-2 pr-2 sm:text-sm sm:leading-5"
-      class:invalid={!validated}
-      class:valid={validated}
       {placeholder} />
       {#if validated}
         <Checkmark position="right" />
