@@ -2,11 +2,13 @@
 import { writable } from "svelte/store";
 import * as Diaper from "./stores/diaper";
 import * as Nursing from "./stores/nursing";
+import * as Sleep from "./stores/sleep";
 
 interface State {
   date: Date;
   diapers: Diaper.Event[];
   nursing: Nursing.Event[];
+  sleep: Sleep.Event[];
 }
 
 function createState() {
@@ -14,6 +16,7 @@ function createState() {
    date: new Date(Date.now()),
    diapers: [],
    nursing: [],
+   sleep: [],
   } as State);
 
   return {
@@ -24,6 +27,10 @@ function createState() {
     }),
     addNursingEvent: (e: Nursing.Event) => update(s => {
       s.nursing.push(e);
+      return s;
+    }),
+    addSleepEvent: (e: Sleep.Event) => update(s => {
+      s.sleep.push(e);
       return s;
     }),
     now: () => update(s => {

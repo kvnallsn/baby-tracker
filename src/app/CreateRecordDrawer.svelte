@@ -9,6 +9,7 @@
   import { state } from "../stores.ts";
   import * as Diaper from "../stores/diaper.ts";
   import * as Nursing from "../stores/nursing.ts";
+  import * as Sleep from "../stores/sleep.ts";
 
   // Forms
 
@@ -140,8 +141,16 @@
           break;
         }
 
-        case Category.Sleep:
+        case Category.Sleep: {
+          const event = {
+            datetime: date,
+            wokeup: undefined,
+            notes: notes,
+          };
+
+          state.addSleepEvent(Sleep.validate(event));
           break;
+        }
 
         case Category.Awake:
           break;
