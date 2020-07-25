@@ -15,6 +15,7 @@
     "@shoelace-style/shoelace": "^2.0.0-beta.7",
     "@tailwindcss/ui": "^0.4.0",
     "@tsconfig/svelte": "^1.0.0",
+    "@types/yup": "^0.29.3",
     "luxon": "^1.24.1",
     "postcss": "^7.0.32",
     "postcss-import": "^12.0.1",
@@ -27,10 +28,12 @@
     "svelte": "^3.0.0",
     "svelte-check": "^0.1.0",
     "svelte-flatpickr": "^2.4.0",
+    "svelte-forms-lib": "^1.1.2",
     "svelte-preprocess": "^4.0.0",
     "tailwindcss": "^1.5.2",
     "tslib": "^2.0.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.3",
+    "yup": "^0.29.1"
   },
   "dependencies": {
     "flatpickr": "^4.6.3",
