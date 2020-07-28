@@ -16,7 +16,7 @@ function createState() {
    date: new Date(Date.now()),
    diapers: [],
    nursing: [],
-   sleep: [],
+   sleep: Sleep.TEST_DATA,
   } as State);
 
   return {

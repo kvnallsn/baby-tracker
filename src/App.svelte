@@ -20,6 +20,9 @@
     state.now();
     drawerVisible = true;
   }
+
+  // get most recent sleep record to see if baby is sleeping
+  $: sleeping = (!$state.sleep[0].wokeup && ((new Date()).getTime() > $state.sleep[0].datetime.getTime()));
 </script>
 
 <style>
@@ -38,6 +41,11 @@
   open={drawerVisible}
   on:close={(_e) => (drawerVisible = false)} />
 <div class="max-w-6xl w-full mx-auto">
+  <div class="my-10">
+    {#if sleeping}
+      <span>Baby is sleeping</span>
+    {/if}
+  </div>
   <span class="text-3xl p-2">Diapers</span>
   <hr class="my-1" />
   <div class="flex flex-col">
