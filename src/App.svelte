@@ -9,6 +9,9 @@
   // component imports
   import Navbar from "./components/Navbar.svelte";
 
+  // import api
+  import * as api from "./api.ts";
+
   // state imports
   import { state } from "./stores.ts";
 
@@ -22,7 +25,11 @@
   }
 
   // get most recent sleep record to see if baby is sleeping
-  $: sleeping = (!$state.sleep[0].wokeup && ((new Date()).getTime() > $state.sleep[0].datetime.getTime()));
+  //$: sleeping = (!$state.sleep[0].wokeup && ((new Date()).getTime() > $state.sleep[0].datetime.getTime()));
+
+  onMount(async () => {
+    await state.refreshEvents("291aa286-0637-4b0d-808c-8ded73da58b7");
+  });
 </script>
 
 <style>
@@ -41,11 +48,6 @@
   open={drawerVisible}
   on:close={(_e) => (drawerVisible = false)} />
 <div class="max-w-6xl w-full mx-auto">
-  <div class="my-10">
-    {#if sleeping}
-      <span>Baby is sleeping</span>
-    {/if}
-  </div>
   <span class="text-3xl p-2">Diapers</span>
   <hr class="my-1" />
   <div class="flex flex-col">
@@ -66,7 +68,7 @@
             </tr>
           </thead>
           <tbody>
-            {#each $state.diapers as event}
+            {#each $state.events.diapers as event}
               <tr>
                 <td class="cell">
                   {event.datetime.toLocaleDateString('en-US')}
@@ -78,7 +80,13 @@
                 <td class="cell">{event.brand}</td>
                 <td class="cell">{event.size}</td>
                 <td class="cell">{event.leakage}</td>
-                <td class="cell">{event.notes}</td>
+                <td class="cell">
+                  {#if event.notes}
+                    {event.notes}
+                  {:else}
+                    -
+                  {/if}
+                </td>
               </tr>
             {/each}
           </tbody>
@@ -107,7 +115,7 @@
             </tr>
           </thead>
           <tbody>
-            {#each $state.nursing as event}
+            {#each $state.events.nursing as event}
               <tr>
                 <td class="cell">
                   {event.datetime.toLocaleDateString('en-US')}
@@ -145,7 +153,7 @@
             </tr>
           </thead>
           <tbody>
-            {#each $state.sleep as event}
+            {#each $state.events.sleep as event}
               <tr>
                 <td class="cell">
                   {event.datetime.toLocaleDateString('en-US')}
