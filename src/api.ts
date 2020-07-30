@@ -4,7 +4,7 @@ import { ApiDiaperEvent, DiaperEvent } from "./api/diaper";
 import { ApiNursingEvent, NursingEvent } from "./api/nursing";
 import { ApiSleepEvent, SleepEvent } from "./api/sleep";
 
-const URI = "http://10.1.0.101:5050";
+const URI = "https://diaprs.allisn.net/api";
 
 interface GetEventsArgs {
   baby: string;

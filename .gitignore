@@ -263,3 +263,4 @@ $RECYCLE.BIN/
 
 /public/build
 /certs
+/public/service-worker*
