@@ -1,4 +1,5 @@
 import svelte from "rollup-plugin-svelte";
+import copy from 'rollup-plugin-copy'
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
@@ -16,18 +17,24 @@ export default [
     output: {
       sourcemap: true,
       format: "iife",
-      name: "app",
-      dir: "public/build",
+      file: "public/app.js",
     },
     plugins: [
-      css({ output: "public/build/extra.css" }),
+      copy({
+        targets: [
+          { src: "src/index.html", dest: "public" },
+          { src: "assets/favicon.png", dest: "public" }
+        ]
+      }),
+
+      css({ output: "public/extra.css" }),
       svelte({
         // enable run-time checks when not in production
         dev: !production,
         // we'll extract any component CSS out into
         // a separate file - better for performance
         css: (css) => {
-          css.write("public/build/bundle.css");
+          css.write("public/bundle.css");
         },
         preprocess: sveltePreprocess({ postcss: true }),
       }),
