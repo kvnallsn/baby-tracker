@@ -1,8 +1,8 @@
 // svelte stores
 import { writable } from "svelte/store";
-import * as Diaper from "./stores/diaper";
-import * as Nursing from "./stores/nursing";
-import * as Sleep from "./stores/sleep";
+//import * as Diaper from "./stores/diaper";
+//import * as Nursing from "./stores/nursing";
+//import * as Sleep from "./stores/sleep";
 
 import * as api from "./api";
 
@@ -43,6 +43,7 @@ function createState() {
       });
     },
 
+    /*
     addDiaperEvent: (e: Diaper.Event) => update(s => {
       //s.events.diapers.push(e);
       return s;
@@ -57,6 +58,7 @@ function createState() {
       //s.events.sleep.push(e);
       return s;
     }),
+    */
 
     now: () => update(s => {
       s.date = new Date(Date.now());
