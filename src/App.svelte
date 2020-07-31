@@ -1,6 +1,7 @@
 <script lang="ts">
   // npm imports
   import { onMount } from "svelte";
+  import Spinner from "svelte-spinner";
 
   // page-specific imports
   import CreateRecordDrawer from "./app/CreateRecordDrawer.svelte";
@@ -8,6 +9,7 @@
 
   // component imports
   import Navbar from "./components/Navbar.svelte";
+  import Button from "./components/Button.svelte";
 
   // import api
   import * as api from "./api.ts";
@@ -24,6 +26,11 @@
     drawerVisible = true;
   }
 
+  async function refresh() {
+    console.log("refresh");
+    await state.refreshEvents("291aa286-0637-4b0d-808c-8ded73da58b7");
+  }
+
   // get most recent sleep record to see if baby is sleeping
   //$: sleeping = (!$state.sleep[0].wokeup && ((new Date()).getTime() > $state.sleep[0].datetime.getTime()));
 
@@ -33,6 +40,11 @@
 </script>
 
 <style>
+  .layout {
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
   .header {
     @apply px-6 py-3 border-b border-gray-200 bg-gray-100 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider;
   }
@@ -43,143 +55,161 @@
 </style>
 
 <GlobalStyle />
-<Navbar on:showCreateRecord={showCreateRecord} />
-<CreateRecordDrawer
-  open={drawerVisible}
-  on:close={(_e) => (drawerVisible = false)} />
-<div class="max-w-6xl w-full mx-auto">
-  <span class="text-3xl p-2">Diapers</span>
-  <hr class="my-1" />
-  <div class="flex flex-col">
-    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-      <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden
-        sm:rounded-lg border-b border-gray-200">
-        <table class="min-w-full">
-          <thead>
-            <tr>
-              <th class="header">Date</th>
-              <th class="header">Time</th>
-              <th class="header">Condition</th>
-              <th class="header">Brand</th>
-              <th class="header">Size</th>
-              <th class="header">Leakage</th>
-              <th class="header">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each $state.events.diapers as event}
-              <tr>
-                <td class="cell">
-                  {event.datetime.toLocaleDateString('en-US')}
-                </td>
-                <td class="cell">
-                  {event.datetime.toLocaleTimeString('en-US')}
-                </td>
-                <td class="cell">{event.condition}</td>
-                <td class="cell">{event.brand}</td>
-                <td class="cell">{event.size}</td>
-                <td class="cell">{event.leakage}</td>
-                <td class="cell">
-                  {#if event.notes}
-                    {event.notes}
-                  {:else}
-                    -
-                  {/if}
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+<div class="layout h-screen w-screen">
+  <Navbar on:showCreateRecord={showCreateRecord} />
+  <CreateRecordDrawer
+    open={drawerVisible}
+    on:close={(_e) => (drawerVisible = false)} />
+  <div class="max-w-6xl w-full mx-auto">
+    {#if $state.events.refreshing}
+      <div class="grid h-full w-full" style="place-items: center">
+        <Spinner
+          size="100"
+          speed="1000"
+          color="#C53030"
+          thickness="2"
+          gap="50"
+        />
       </div>
-    </div>
-  </div>
-
-  <div class="my-4" />
-
-  <span class="text-3xl p-2">Nursing</span>
-  <hr class="my-1" />
-  <div class="flex flex-col">
-    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-      <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden
-        sm:rounded-lg border-b border-gray-200">
-        <table class="min-w-full">
-          <thead>
-            <tr>
-              <th class="header">Date</th>
-              <th class="header">Time</th>
-              <th class="header">Source</th>
-              <th class="header">Side / Contents</th>
-              <th class="header">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each $state.events.nursing as event}
-              <tr>
-                <td class="cell">
-                  {event.datetime.toLocaleDateString('en-US')}
-                </td>
-                <td class="cell">
-                  {event.datetime.toLocaleTimeString('en-US')}
-                </td>
-                <td class="cell">{event.source}</td>
-                <td class="cell">{event.side}</td>
-                <td class="cell">{event.notes}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+    {:else}
+      <div class="flex justify-between items-center">
+        <span class="text-3xl p-2">Diapers</span>
+        <Button text="Refresh" on:click={refresh} />
       </div>
-    </div>
-  </div>
-
-  <div class="my-4" />
-
-  <span class="text-3xl p-2">Sleep</span>
-  <hr class="my-1" />
-  <div class="flex flex-col">
-    <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-      <div
-        class="align-middle inline-block min-w-full shadow overflow-hidden
-        sm:rounded-lg border-b border-gray-200">
-        <table class="min-w-full">
-          <thead>
-            <tr>
-              <th class="header">Date Fell Asleep</th>
-              <th class="header">Time Fell Asleep</th>
-              <th class="header">Date Woke Up</th>
-              <th class="header">Time Woke Up</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each $state.events.sleep as event}
-              <tr>
-                <td class="cell">
-                  {event.datetime.toLocaleDateString('en-US')}
-                </td>
-                <td class="cell">
-                  {event.datetime.toLocaleTimeString('en-US')}
-                </td>
-                <td class="cell">
-                  {#if event.wokeup}
-                    {event.wokeup?.toLocaleDateString('en-US')}
-                  {:else}
-                    <span>-</span>
-                  {/if}
-                </td>
-                <td class="cell">
-                  {#if event.wokeup}
-                    {event.wokeup?.toLocaleTimeString('en-US')}
-                  {:else}
-                    <span>-</span>
-                  {/if}
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+      <hr class="my-1" />
+      <div class="flex flex-col">
+        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div
+            class="align-middle inline-block min-w-full shadow overflow-hidden
+            sm:rounded-lg border-b border-gray-200">
+            <table class="min-w-full">
+              <thead>
+                <tr>
+                  <th class="header">Date</th>
+                  <th class="header">Time</th>
+                  <th class="header">Condition</th>
+                  <th class="header">Brand</th>
+                  <th class="header">Size</th>
+                  <th class="header">Leakage</th>
+                  <th class="header">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each $state.events.diapers as event}
+                  <tr>
+                    <td class="cell">
+                      {event.datetime.toLocaleDateString('en-US')}
+                    </td>
+                    <td class="cell">
+                      {event.datetime.toLocaleTimeString('en-US')}
+                    </td>
+                    <td class="cell">{event.condition}</td>
+                    <td class="cell">{event.brand}</td>
+                    <td class="cell">{event.size}</td>
+                    <td class="cell">{event.leakage}</td>
+                    <td class="cell">
+                      {#if event.notes}
+                        {event.notes}
+                      {:else}
+                        -
+                      {/if}
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div class="my-4" />
+
+      <span class="text-3xl p-2">Nursing</span>
+      <hr class="my-1" />
+      <div class="flex flex-col">
+        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div
+            class="align-middle inline-block min-w-full shadow overflow-hidden
+            sm:rounded-lg border-b border-gray-200">
+            <table class="min-w-full">
+              <thead>
+                <tr>
+                  <th class="header">Date</th>
+                  <th class="header">Time</th>
+                  <th class="header">Source</th>
+                  <th class="header">Side / Contents</th>
+                  <th class="header">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each $state.events.nursing as event}
+                  <tr>
+                    <td class="cell">
+                      {event.datetime.toLocaleDateString('en-US')}
+                    </td>
+                    <td class="cell">
+                      {event.datetime.toLocaleTimeString('en-US')}
+                    </td>
+                    <td class="cell">{event.source}</td>
+                    <td class="cell">{event.side}</td>
+                    <td class="cell">{event.notes}</td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="my-4" />
+
+      <span class="text-3xl p-2">Sleep</span>
+      <hr class="my-1" />
+      <div class="flex flex-col">
+        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div
+            class="align-middle inline-block min-w-full shadow overflow-hidden
+            sm:rounded-lg border-b border-gray-200">
+            <table class="min-w-full">
+              <thead>
+                <tr>
+                  <th class="header">Date Fell Asleep</th>
+                  <th class="header">Time Fell Asleep</th>
+                  <th class="header">Date Woke Up</th>
+                  <th class="header">Time Woke Up</th>
+                </tr>
+              </thead>
+              <tbody>
+                {#each $state.events.sleep as event}
+                  <tr>
+                    <td class="cell">
+                      {event.datetime.toLocaleDateString('en-US')}
+                    </td>
+                    <td class="cell">
+                      {event.datetime.toLocaleTimeString('en-US')}
+                    </td>
+                    <td class="cell">
+                      {#if event.wokeup}
+                        {event.wokeup?.toLocaleDateString('en-US')}
+                      {:else}
+                        <span>-</span>
+                      {/if}
+                    </td>
+                    <td class="cell">
+                      {#if event.wokeup}
+                        {event.wokeup?.toLocaleTimeString('en-US')}
+                      {:else}
+                        <span>-</span>
+                      {/if}
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    {/if}
   </div>
 </div>
+
