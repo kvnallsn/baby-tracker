@@ -18,6 +18,7 @@ export default [
       sourcemap: true,
       format: "iife",
       file: "public/app.js",
+      name: "diapr",
     },
     plugins: [
       copy({

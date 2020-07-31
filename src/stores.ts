@@ -30,6 +30,10 @@ function createState() {
   return {
     subscribe,
 
+    handleMessage: (msg: any) => {
+      console.log(msg);
+    },
+
     refreshEvents: async (baby: string) => {
       const events = await api.getEvents({
         "baby": baby,
