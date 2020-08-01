@@ -58,6 +58,11 @@ function createState() {
       });
     },
 
+    createEvent: async (payload: any) => {
+      const event = await api.createEvent(payload);
+      console.log(event);
+    },
+
     /*
     addDiaperEvent: (e: Diaper.Event) => update(s => {
       //s.events.diapers.push(e);

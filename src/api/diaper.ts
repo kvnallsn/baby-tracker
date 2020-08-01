@@ -15,10 +15,10 @@ export enum Condition {
 /** Leakage represents if the diaper leaked or did not */
 export enum Leakage {
   /** All organic solids and fluids contained! */
-  No = "No",
+  None = "None",
 
   /** All organic solids and fluids contained */
-  Yes = "Yes",
+  Some = "Some",
 
   /** ...too much poop! */
   Blowout = "Blowout",

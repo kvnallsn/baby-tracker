@@ -11,6 +11,19 @@ async function http_get<T>(request: RequestInfo): Promise<T> {
   const body = await response.json();
   return body;
 }
+
+async function http_post<T>(request: RequestInfo, data: any): Promise<T> {
+  const response = await fetch(request, {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  const body = await response.json();
+  return body;
+}
  
 function uri(endpoint: string, args?: any): URL {
   const url = new URL(`${URI}${endpoint}`);
@@ -64,6 +77,13 @@ async function getEvents(params: GetEventsArgs): Promise<Events> {
     };
 }
 
+async function createEvent(payload: any): Promise<any> {
+  const url = uri('/events/new');
+  const json = await http_post<{ id: string }>(url.toString(), payload);
+
+  return { "id": json.id }
+}
+
 export {
   // types
   DiaperEvent,
@@ -72,4 +92,5 @@ export {
 
   // functions
   getEvents,
+  createEvent,
 }

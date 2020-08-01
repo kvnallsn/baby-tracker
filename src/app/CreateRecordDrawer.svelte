@@ -7,9 +7,11 @@
 
   // state imports
   import { state } from "../stores.ts";
-  import * as Diaper from "../stores/diaper.ts";
   import * as Nursing from "../stores/nursing.ts";
   import * as Sleep from "../stores/sleep.ts";
+
+  // Models
+  import * as Diaper from "../api/diaper.ts";
 
   // Forms
 
@@ -48,8 +50,8 @@
   ];
 
   let diaperLeakages = [
-    { value: Diaper.Leakage.No, text: "No Leakage" },
-    { value: Diaper.Leakage.Yes, text: "Leakage" },
+    { value: Diaper.Leakage.None, text: "No Leakage" },
+    { value: Diaper.Leakage.Some, text: "Leakage" },
     { value: Diaper.Leakage.Blowout, text: "Blowout" },
   ];
 
@@ -105,7 +107,7 @@
     diaperCondition = Diaper.Condition.Dry;
     diaperBrand = "";
     diaperSize = 0;
-    diaperLeakage = Diaper.Leakage.No;
+    diaperLeakage = Diaper.Leakage.None;
 
     // nursing mutable data
     nursingSource = Nursing.Source.Breast;
@@ -114,41 +116,34 @@
 
   async function createRecordSuccess() {
     try {
+      let event;
+
       switch (+category) {
         case Category.Diaper: {
-          const event = {
-            datetime: date,
+          event = {
+            type: "diaper",
             condition: diaperCondition,
             brand: diaperBrand,
             size: diaperSize,
             leakage: diaperLeakage,
-            notes: notes,
           };
-
-          state.addDiaperEvent(Diaper.validate(event));
           break;
         }
 
         case Category.Nursing: {
-          const event = {
-            datetime: date,
+          event = {
             source: nursingSource,
             side: nursingSide,
-            notes: notes,
           };
 
-          state.addNursingEvent(Nursing.validate(event));
           break;
         }
 
         case Category.Sleep: {
-          const event = {
-            datetime: date,
+          event = {
             wokeup: undefined,
-            notes: notes,
           };
 
-          state.addSleepEvent(Sleep.validate(event));
           break;
         }
 
@@ -159,10 +154,23 @@
           break;
       }
 
-      resetMutableData();
-      dispatch("close");
+      if (event !== undefined) {
+        const payload = {
+          baby_id: "291aa286-0637-4b0d-808c-8ded73da58b7",
+          at: date.toISOString(),
+          notes: notes,
+          event: event
+        };
+
+        console.log(payload);
+        await state.createEvent(payload);
+      }
+
     } catch (e) {
       console.error(e);
+    } finally {
+      resetMutableData();
+      dispatch("close");
     }
   }
 
