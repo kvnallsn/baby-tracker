@@ -7,11 +7,11 @@
 
   // state imports
   import { state } from "../stores.ts";
-  import * as Nursing from "../stores/nursing.ts";
-  import * as Sleep from "../stores/sleep.ts";
 
   // Models
   import * as Diaper from "../api/diaper.ts";
+  import * as Nursing from "../api/nursing.ts";
+  import * as Sleep from "../api/sleep.ts";
 
   // Forms
 
