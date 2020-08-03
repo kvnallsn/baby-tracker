@@ -7,6 +7,7 @@ import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
 import css from "rollup-plugin-css-only";
+import url from "@rollup/plugin-url";
 const fs = require('fs');
 
 const production = !process.env.ROLLUP_WATCH;
@@ -24,11 +25,14 @@ export default [
       copy({
         targets: [
           { src: "src/index.html", dest: "public" },
-          { src: "assets/favicon.png", dest: "public" }
+          { src: "assets/favicon.png", dest: "public" },
         ]
       }),
 
       css({ output: "public/extra.css" }),
+
+      url(),
+
       svelte({
         // enable run-time checks when not in production
         dev: !production,
