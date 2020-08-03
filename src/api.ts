@@ -1,15 +1,24 @@
 //! API helper interface
 
-import { ApiDiaperEvent, DiaperEvent } from "./api/diaper";
-import { ApiNursingEvent, NursingEvent } from "./api/nursing";
-import { ApiSleepEvent, SleepEvent } from "./api/sleep";
+import type { Event } from "./api/event";
 
 const URI = "https://diaprs.allisn.net/api";
+const DateFormat = /^\d{4}-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}/
+
+function http_parse<T>(text: string): T {
+  return JSON.parse(text, (key, value) => {
+    if (typeof value === "string" && DateFormat.test(value)) {
+      return new Date(value);
+    }
+
+    return value;
+  });
+}
 
 async function http_get<T>(request: RequestInfo): Promise<T> {
   const response = await fetch(request);
-  const body = await response.json();
-  return body;
+  const body = await response.text();
+  return http_parse(body);
 }
 
 async function http_post<T>(request: RequestInfo, data: any): Promise<T> {
@@ -21,8 +30,7 @@ async function http_post<T>(request: RequestInfo, data: any): Promise<T> {
     },
     body: JSON.stringify(data)
   });
-  const body = await response.json();
-  return body;
+  return http_parse(await response.text());
 }
  
 function uri(endpoint: string, args?: any): URL {
@@ -41,40 +49,15 @@ interface GetEventsArgs {
   offset?: number;
 }
 
-interface Events {
-  diapers: DiaperEvent[];
-  nursing: NursingEvent[];
-  sleep: SleepEvent[];
-}
-
 /**
  * Fetches all events from the remote server
  */
-async function getEvents(params: GetEventsArgs): Promise<Events> {
+async function getEvents(params: GetEventsArgs): Promise<Event[]> {
     const url = uri('/events', params);
-    const json = await http_get<{ events: { diapers: ApiDiaperEvent[], nursing: ApiNursingEvent[], sleep: ApiSleepEvent[] }}>(url.toString());
+    const json = await http_get<{ events: Event[] }>(url.toString());
 
     // parse result into our structures
-    let diapers = [];
-    for (const [, event] of Object.entries(json.events.diapers)) {
-      diapers.push(DiaperEvent.fromApi(event));
-    }
-
-    let nursing = [];
-    for (const [, event] of Object.entries(json.events.nursing)) {
-      nursing.push(NursingEvent.fromApi(event));
-    }
-
-    let sleep = [];
-    for (const [, event] of Object.entries(json.events.sleep)) {
-      nursing.push(SleepEvent.fromApi(event));
-    }
-
-    return {
-      diapers: diapers,
-      nursing: nursing,
-      sleep: sleep,
-    };
+    return json.events;
 }
 
 async function createEvent(payload: any): Promise<any> {
@@ -86,9 +69,7 @@ async function createEvent(payload: any): Promise<any> {
 
 export {
   // types
-  DiaperEvent,
-  NursingEvent,
-  SleepEvent,
+  Event,
 
   // functions
   getEvents,

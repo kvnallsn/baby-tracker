@@ -1,17 +1,12 @@
 // svelte stores
 import { tick } from "svelte";
 import { writable } from "svelte/store";
-//import * as Diaper from "./stores/diaper";
-//import * as Nursing from "./stores/nursing";
-//import * as Sleep from "./stores/sleep";
 
 import * as api from "./api";
 
 interface StateEvents {
   refreshing: boolean;
-  diapers: api.DiaperEvent[];
-  nursing: api.NursingEvent[];
-  sleep: api.SleepEvent[];
+  events: api.Event[];
 }
 
 interface State {
@@ -24,9 +19,7 @@ function createState() {
    date: new Date(Date.now()),
    events: {
      refreshing: false,
-     diapers: [],
-     nursing: [],
-     sleep: [],
+     events: [],
    }
   } as State);
 
@@ -49,11 +42,11 @@ function createState() {
         "baby": baby,
       });
 
+      console.log(events);
+
       update(s => {
         s.events.refreshing = false;
-        s.events.diapers = events.diapers;
-        s.events.nursing = events.nursing;
-        s.events.sleep = events.sleep;
+        s.events.events = events;
         return s;
       });
     },

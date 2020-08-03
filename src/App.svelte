@@ -17,9 +17,14 @@
   // state imports
   import { state } from "./stores.ts";
 
+  // svg imports
+  import bottle from "./svg/004-feeding bottle.svg";
+
   // mutable data
   let alertVisible: boolean = false;
   let drawerVisible: boolean = false;
+
+  console.log(bottle);
 
   function showCreateRecord() {
     state.now();
@@ -57,9 +62,6 @@
 <GlobalStyle />
 <div class="layout h-screen w-screen">
   <Navbar on:showCreateRecord={showCreateRecord} />
-  <CreateRecordDrawer
-    open={drawerVisible}
-    on:close={(_e) => (drawerVisible = false)} />
   <div class="max-w-6xl w-full mx-auto">
     {#if $state.events.refreshing}
       <div class="grid h-full w-full" style="place-items: center">
@@ -78,138 +80,18 @@
       </div>
       <hr class="my-1" />
       <div class="flex flex-col">
-        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          <div
-            class="align-middle inline-block min-w-full shadow overflow-hidden
-            sm:rounded-lg border-b border-gray-200">
-            <table class="min-w-full">
-              <thead>
-                <tr>
-                  <th class="header">Date</th>
-                  <th class="header">Time</th>
-                  <th class="header">Condition</th>
-                  <th class="header">Brand</th>
-                  <th class="header">Size</th>
-                  <th class="header">Leakage</th>
-                  <th class="header">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {#each $state.events.diapers as event}
-                  <tr>
-                    <td class="cell">
-                      {event.datetime.toLocaleDateString('en-US')}
-                    </td>
-                    <td class="cell">
-                      {event.datetime.toLocaleTimeString('en-US')}
-                    </td>
-                    <td class="cell">{event.condition}</td>
-                    <td class="cell">{event.brand}</td>
-                    <td class="cell">{event.size}</td>
-                    <td class="cell">{event.leakage}</td>
-                    <td class="cell">
-                      {#if event.notes}
-                        {event.notes}
-                      {:else}
-                        -
-                      {/if}
-                    </td>
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="my-4" />
-
-      <span class="text-3xl p-2">Nursing</span>
-      <hr class="my-1" />
-      <div class="flex flex-col">
-        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          <div
-            class="align-middle inline-block min-w-full shadow overflow-hidden
-            sm:rounded-lg border-b border-gray-200">
-            <table class="min-w-full">
-              <thead>
-                <tr>
-                  <th class="header">Date</th>
-                  <th class="header">Time</th>
-                  <th class="header">Source</th>
-                  <th class="header">Side / Contents</th>
-                  <th class="header">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {#each $state.events.nursing as event}
-                  <tr>
-                    <td class="cell">
-                      {event.datetime.toLocaleDateString('en-US')}
-                    </td>
-                    <td class="cell">
-                      {event.datetime.toLocaleTimeString('en-US')}
-                    </td>
-                    <td class="cell">{event.source}</td>
-                    <td class="cell">{event.side}</td>
-                    <td class="cell">{event.notes}</td>
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="my-4" />
-
-      <span class="text-3xl p-2">Sleep</span>
-      <hr class="my-1" />
-      <div class="flex flex-col">
-        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          <div
-            class="align-middle inline-block min-w-full shadow overflow-hidden
-            sm:rounded-lg border-b border-gray-200">
-            <table class="min-w-full">
-              <thead>
-                <tr>
-                  <th class="header">Date Fell Asleep</th>
-                  <th class="header">Time Fell Asleep</th>
-                  <th class="header">Date Woke Up</th>
-                  <th class="header">Time Woke Up</th>
-                </tr>
-              </thead>
-              <tbody>
-                {#each $state.events.sleep as event}
-                  <tr>
-                    <td class="cell">
-                      {event.datetime.toLocaleDateString('en-US')}
-                    </td>
-                    <td class="cell">
-                      {event.datetime.toLocaleTimeString('en-US')}
-                    </td>
-                    <td class="cell">
-                      {#if event.wokeup}
-                        {event.wokeup?.toLocaleDateString('en-US')}
-                      {:else}
-                        <span>-</span>
-                      {/if}
-                    </td>
-                    <td class="cell">
-                      {#if event.wokeup}
-                        {event.wokeup?.toLocaleTimeString('en-US')}
-                      {:else}
-                        <span>-</span>
-                      {/if}
-                    </td>
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <img class="h-8 w-8" src={bottle} alt="bottle" />
       </div>
     {/if}
   </div>
 </div>
+<div>
+  <CreateRecordDrawer
+    open={drawerVisible}
+    on:close={(_e) => (drawerVisible = false)} />
+</div>
 
+<!--
+  attribution
+  Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+-->

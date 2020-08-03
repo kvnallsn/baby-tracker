@@ -159,13 +159,12 @@
           baby_id: "291aa286-0637-4b0d-808c-8ded73da58b7",
           at: date.toISOString(),
           notes: notes,
-          event: event
+          event: event,
         };
 
         console.log(payload);
         await state.createEvent(payload);
       }
-
     } catch (e) {
       console.error(e);
     } finally {
@@ -250,17 +249,17 @@
         options={nursingSources}
         bind:value={nursingSource} />
 
-        {#if nursingSource === Nursing.Source.Breast }
-          <RadioGroup
-            label="Side"
-            options={nursingBreastSides}
-            bind:value={nursingSide} />
-        {:else}
-          <RadioGroup
-            label="Contents"
-            options={nursingBottleTypes}
-            bind:value={nursingSide} />
-        {/if}
+      {#if nursingSource === Nursing.Source.Breast}
+        <RadioGroup
+          label="Side"
+          options={nursingBreastSides}
+          bind:value={nursingSide} />
+      {:else}
+        <RadioGroup
+          label="Contents"
+          options={nursingBottleTypes}
+          bind:value={nursingSide} />
+      {/if}
     {:else if category == Category.Sleep}
       <div class="text-base sm:text-sm">
         Little one fell asleep at {date.toLocaleTimeString('en-US')}
