@@ -15,88 +15,52 @@ export enum EventType {
 /** The condition a diaper may be in */
 export enum Condition {
   /** Clean diaper */
-  Dry = "Dry",
+  Dry = "dry",
 
   /** Pee only */
-  Wet = "Wet",
+  Wet = "wet",
 
   /** Poop ahead! */
-  Bowel = "Bowel",
+  Bowel = "bowel",
 }
 
 /** Leakage represents if the diaper leaked or did not */
 export enum Leakage {
   /** All organic solids and fluids contained! */
-  None = "None",
+  None = "none",
 
   /** All organic solids and fluids contained */
-  Some = "Some",
+  Some = "some",
 
   /** ...too much poop! */
-  Blowout = "Blowout"
+  Blowout = "blowout"
 }
 
 /** Where the baby was feed from */
 export enum Source {
   /** Feed from breast */
-  Breast = "Breast",
+  Breast = "breast",
 
   /** Bottle-fed */
-  Bottle = "Bottle"
+  Bottle = "bottle"
 }
 
 /** If breast, what side was used */
 export enum Side {
   /** Started on left side */
-  Left = "Left",
+  Left = "left",
 
   /** Started on right side */
-  Right = "Right",
+  Right = "right",
 
   /** Hungry little fella! */
-  Both = "Both",
+  Both = "both",
 
   /** If bottle and formula was used */
-  Formula = "Formula",
+  Formula = "formula",
 
   /** If bottle and pumped was used */
-  Pumped = "Pumped",
-}
-
-export interface IEvent {
-  /** Unique identifer of this event */
-  id: string;
-
-  /** Unique identifer of baby */
-  baby_id: string;
-
-  /** Date and time the diaper change / event took place */
-  at: string;
-
-  /** Event specifics */
-  event: {
-   type: EventType;
-
-   detail: {
-      /** Condition the diaper is in (see `Condition`) */
-      condition: Condition;
-
-      /** Brand of the diaper (e.g., huggies, pampers, etc. */
-      brand: string;
-
-      /** Size of the diaper */
-      size: number;
-
-      /** Whether or not the diaper leaked (or worse...blew out) */
-      leakage: Leakage;
-    } | {
-      source: Source;
-
-      detail: Side;
-    } | {
-      woke_up: string;
-    }
-  };
+  Pumped = "pumped",
 }
 
 export class Event {
@@ -119,21 +83,69 @@ export class Event {
   /** Any optional notes */
   notes?: string;
 
-  constructor(id: string, baby_id: string, at: string, detail: DiaperDetail | NursingDetail | SleepDetail, notes?: string) {
+  constructor(id: string, baby_id: string, at: Date, detail: DiaperDetail | NursingDetail | SleepDetail, notes?: string) {
     this.id = id;
     this.baby_id = baby_id;
-    this.at = new Date(at);
+    this.at = at;
+    this.notes = notes;
 
     if (detail instanceof DiaperDetail) {
-      this.event.type = EventType.Diaper;
+      this.event = {
+        type: EventType.Diaper,
+        detail: detail,
+      };
     } else if (detail instanceof NursingDetail) {
-      this.event.type = EventType.Nursing;
+      this.event = {
+        type: EventType.Nursing,
+        detail: detail,
+      };
     } else if (detail instanceof SleepDetail) {
-      this.event.type = EventType.Sleep;
+      this.event = {
+        type: EventType.Sleep,
+        detail: detail,
+      };
     }
+  }
 
-    this.event.detail = detail;
-    this.notes = notes;
+  static fromJSON(event: Event): Event {
+    if (event.event.type === EventType.Diaper) {
+      const detail = event.event.detail as DiaperDetail;
+      return new Event(
+        event.id,
+        event.baby_id,
+        event.at,
+        new DiaperDetail(
+          detail.condition,
+          detail.brand,
+          detail.size,
+          detail.leakage
+        ),
+        event.notes
+      );
+    } else if (event.event.type === EventType.Nursing) {
+      const detail = event.event.detail as NursingDetail;
+      return new Event(
+        event.id,
+        event.baby_id,
+        event.at,
+        new NursingDetail(
+          detail.source,
+          detail.detail
+        ),
+        event.notes
+      );
+    } else if (event.event.type === EventType.Sleep) {
+      const detail = event.event.detail as SleepDetail;
+      return new Event(
+        event.id,
+        event.baby_id,
+        event.at,
+        new SleepDetail(
+          detail.woke_up,
+        ),
+        event.notes
+      );
+    }
   }
 }
 
@@ -156,6 +168,38 @@ export class DiaperDetail {
     this.size = size;
     this.leakage = leakage;
   }
+
+  status(): string {
+    switch (this.condition) {
+      case Condition.Dry:
+        return "Dry";
+ 
+      case Condition.Wet:
+        return "Wet";
+
+      case Condition.Bowel:
+        return "Bowel Movement";
+
+      default:
+      return "Unknown Diaper Condition";
+    }
+  }
+
+  state(): string {
+    switch (this.leakage) {
+      case Leakage.None:
+        return "No Leakage";
+
+      case Leakage.Some:
+        return "Some Leakage";
+
+      case Leakage.Blowout:
+        return "Blowout";
+
+      default:
+        return "";
+    }
+  }
 }
 
 export class NursingDetail {
@@ -167,13 +211,48 @@ export class NursingDetail {
     this.source = source;
     this.detail = detail;
   }
+
+  get_source(): string {
+    switch (this.source) {
+      case Source.Bottle:
+        return "Bottle";
+
+      case Source.Breast:
+        return "Breast";
+
+      default:
+        return "";
+    }
+  }
+
+  get_detail(): string {
+    switch (this.detail) {
+      case Side.Left:
+        return "Left Breast";
+
+      case Side.Right:
+        return "Right Breast";
+
+      case Side.Both:
+        return "Both Breasts";
+
+      case Side.Formula:
+        return "Formula";
+
+      case Side.Pumped:
+        return "Pumped";
+
+      default:
+        return "";
+    }
+  }
 }
 
 export class SleepDetail {
   woke_up: Date;
 
-  constructor(woke_up: string) {
-    this.woke_up = new Date(woke_up);
+  constructor(woke_up: Date) {
+    this.woke_up = woke_up;
   }
 }
 

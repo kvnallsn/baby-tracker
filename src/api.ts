@@ -1,6 +1,6 @@
 //! API helper interface
 
-import type { Event } from "./api/event";
+import { Event } from "./api/event";
 
 const URI = "https://diaprs.allisn.net/api";
 const DateFormat = /^\d{4}-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}/
@@ -57,7 +57,7 @@ async function getEvents(params: GetEventsArgs): Promise<Event[]> {
     const json = await http_get<{ events: Event[] }>(url.toString());
 
     // parse result into our structures
-    return json.events;
+    return json.events.map(e => Event.fromJSON(e));
 }
 
 async function createEvent(payload: any): Promise<any> {

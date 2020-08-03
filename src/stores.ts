@@ -6,7 +6,7 @@ import * as api from "./api";
 
 interface StateEvents {
   refreshing: boolean;
-  events: api.Event[];
+  data: api.Event[];
 }
 
 interface State {
@@ -19,7 +19,7 @@ function createState() {
    date: new Date(Date.now()),
    events: {
      refreshing: false,
-     events: [],
+     data: [],
    }
   } as State);
 
@@ -42,11 +42,9 @@ function createState() {
         "baby": baby,
       });
 
-      console.log(events);
-
       update(s => {
         s.events.refreshing = false;
-        s.events.events = events;
+        s.events.data = events;
         return s;
       });
     },

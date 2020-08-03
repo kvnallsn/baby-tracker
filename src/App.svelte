@@ -13,18 +13,19 @@
 
   // import api
   import * as api from "./api.ts";
+  import { EventType } from "./api/event.ts";
 
   // state imports
   import { state } from "./stores.ts";
 
   // svg imports
+  import diaper from "./svg/010-diaper.svg";
   import bottle from "./svg/004-feeding bottle.svg";
+  import night from "./svg/026-night.svg";
 
   // mutable data
   let alertVisible: boolean = false;
   let drawerVisible: boolean = false;
-
-  console.log(bottle);
 
   function showCreateRecord() {
     state.now();
@@ -57,6 +58,22 @@
   .cell {
     @apply px-6 py-4 whitespace-no-wrap border-b border-gray-200;
   }
+
+  .cell-title {
+    @apply text-sm leading-5 text-gray-900;
+  }
+
+  .cell-subtitle {
+    @apply text-sm leading-5 text-gray-500;
+  }
+
+  .group:hover .cell-title {
+    @apply text-white;
+  }
+
+  .group:hover .cell-subtitle {
+    @apply text-gray-200;
+  }
 </style>
 
 <GlobalStyle />
@@ -75,12 +92,78 @@
       </div>
     {:else}
       <div class="flex justify-between items-center">
-        <span class="text-3xl p-2">Diapers</span>
+        <span class="text-3xl p-2">Events</span>
         <Button text="Refresh" on:click={refresh} />
       </div>
       <hr class="my-1" />
       <div class="flex flex-col">
-        <img class="h-8 w-8" src={bottle} alt="bottle" />
+        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+              <tbody>
+                {#each $state.events.data as event}
+                  <tr class="group hover:bg-red-600">
+                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                      <div class="flex items-center">
+                        <div class="flex-shrink-0 h-10 w-10 group-hover:text-white">
+                          {#if event.event.type === EventType.Diaper}
+                            <img class="h-10 w-10 rounded-full" src={diaper} alt="diaper" />
+                          {:else if event.event.type === EventType.Nursing}
+                            <img class="h-10 w-10 rounded-full" src={bottle} alt="bottle" />
+                          {:else if event.event.type === EventType.Sleep}
+                            <img class="h-10 w-10 rounded-full" src={night} alt="sleep" />
+                          {/if}
+                        </div>
+                        <div class="ml-4">
+                          <div class="cell-title">
+                            {#if event.event.type === EventType.Diaper}
+                              Diaper Change
+                            {:else if event.event.type === EventType.Nursing}
+                              Nursing
+                            {:else if event.event.type === EventType.Sleep}
+                              Sleep
+                            {/if}
+                          </div>
+                          <div class="cell-subtitle">
+                            {event.at.toLocaleString('en-US')}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                      {#if event.event.type === EventType.Diaper}
+                        <div class="cell-title">{event.event.detail.status()}</div>
+                        <div class="cell-subtitle">{event.event.detail.state()}</div>
+                      {:else if event.event.type === EventType.Nursing}
+                        <div class="cell-title">{event.event.detail.get_source()}</div>
+                        <div class="cell-subtitle">Source</div>
+                      {:else if event.event.type === EventType.Sleep}
+                        Sleep
+                      {/if}
+                    </td>
+                    <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                      {#if event.event.type === EventType.Diaper}
+                        {#if event.event.detail.brand === ""}
+                          <div class="cell-title">Generic</div>
+                        {:else}
+                          <div class="cell-title">{event.event.detail.brand}</div>
+                        {/if}
+                        <div class="cell-subtitle">Size {event.event.detail.size}</div>
+                      {:else if event.event.type === EventType.Nursing}
+                        <div class="cell-title">{event.event.detail.get_detail()}</div>
+                      {:else if event.event.type === EventType.Sleep}
+                        Sleep
+                      {/if}
+                    </td>
+                    <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
+                      <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     {/if}
   </div>
