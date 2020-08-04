@@ -2,6 +2,7 @@
   // npm imports
   import { onMount } from "svelte";
   import Spinner from "svelte-spinner";
+  import SvelteInfiniteScroll from "svelte-infinite-scroll";
 
   // page-specific imports
   import CreateRecordDrawer from "./app/CreateRecordDrawer.svelte";
@@ -26,6 +27,7 @@
   // mutable data
   let alertVisible: boolean = false;
   let drawerVisible: boolean = false;
+  let page = 0;
 
   function showCreateRecord() {
     state.now();
@@ -34,14 +36,16 @@
 
   async function refresh() {
     console.log("refresh");
-    await state.refreshEvents("291aa286-0637-4b0d-808c-8ded73da58b7");
+    await state.refreshEvents("dceae182-1561-4486-9f6a-fe7fa8dae491");
   }
 
-  // get most recent sleep record to see if baby is sleeping
-  //$: sleeping = (!$state.sleep[0].wokeup && ((new Date()).getTime() > $state.sleep[0].datetime.getTime()));
+  async function loadNextPage() {
+    page += 1;
+    await state.loadMoreEvents("dceae182-1561-4486-9f6a-fe7fa8dae491", page);
+  }
 
   onMount(async () => {
-    await state.refreshEvents("291aa286-0637-4b0d-808c-8ded73da58b7");
+    await state.refreshEvents("dceae182-1561-4486-9f6a-fe7fa8dae491");
   });
 </script>
 
@@ -97,8 +101,8 @@
       </div>
       <hr class="my-1" />
       <div class="flex flex-col">
-        <div class="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          <div class="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
+        <div class="-my-2 py-2 overflow-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div class="align-middle inline-block min-w-full shadow sm:rounded-lg border-b border-gray-200">
             <table class="min-w-full divide-y divide-gray-200">
               <tbody>
                 {#each $state.events.data as event}
@@ -167,6 +171,10 @@
       </div>
     {/if}
   </div>
+  <SvelteInfiniteScroll
+    window={true}
+    hasMore={$state.events.hasMore}
+    on:loadMore={() => loadNextPage()} />
 </div>
 <div>
   <CreateRecordDrawer

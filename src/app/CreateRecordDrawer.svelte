@@ -132,8 +132,9 @@
 
         case Category.Nursing: {
           event = {
+            type: "nursing",
             source: nursingSource,
-            side: nursingSide,
+            detail: nursingSide,
           };
 
           break;
@@ -141,6 +142,7 @@
 
         case Category.Sleep: {
           event = {
+            type: "sleep",
             wokeup: undefined,
           };
 
@@ -156,13 +158,12 @@
 
       if (event !== undefined) {
         const payload = {
-          baby_id: "291aa286-0637-4b0d-808c-8ded73da58b7",
+          baby_id: "dceae182-1561-4486-9f6a-fe7fa8dae491",
           at: date.toISOString(),
           notes: notes,
           event: event,
         };
 
-        console.log(payload);
         await state.createEvent(payload);
       }
     } catch (e) {

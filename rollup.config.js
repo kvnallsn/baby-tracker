@@ -6,11 +6,12 @@ import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
-import css from "rollup-plugin-css-only";
+//import css from "rollup-plugin-css-only";
 import image from "@rollup/plugin-image";
 const fs = require('fs');
 
 const production = !process.env.ROLLUP_WATCH;
+const dest = production ? "dist" : "public";
 
 export default [
   {
@@ -18,18 +19,18 @@ export default [
     output: {
       sourcemap: true,
       format: "iife",
-      file: "public/app.js",
+      file: `${dest}/app.js`,
       name: "diapr",
     },
     plugins: [
       copy({
         targets: [
-          { src: "src/index.html", dest: "public" },
-          { src: "assets/favicon.png", dest: "public" },
+          { src: "src/index.html", dest: dest },
+          { src: "assets/favicon.png", dest: dest },
         ]
       }),
 
-      //css({ output: "public/extra.css" }),
+      //css({ output: `${dest}/extra.css` }),
 
       image(),
 
@@ -39,7 +40,7 @@ export default [
         // we'll extract any component CSS out into
         // a separate file - better for performance
         css: (css) => {
-          css.write("public/bundle.css");
+          css.write(`${dest}/bundle.css`);
         },
         preprocess: sveltePreprocess({ postcss: true }),
       }),
@@ -60,10 +61,10 @@ export default [
       // the bundle has been generated
       !production && serve(),
 
-      // Watch the `public` directory and refresh the
+      // Watch the `${dest}` directory and refresh the
       // browser on changes when not in production
       !production && livereload({
-        watch: 'public',
+        watch: dest,
         https: {
           key: fs.readFileSync('certs/diaprs.allisn.net.key'),
           cert: fs.readFileSync('certs/diaprs.allisn.net.crt')
@@ -84,7 +85,7 @@ export default [
     output: {
       sourcemap: true,
       format: "iife",
-      file: "public/service-worker.js",
+      file: `${dest}/service-worker.js`,
     },
     plugins: [
       resolve(),

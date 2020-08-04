@@ -60,11 +60,14 @@ async function getEvents(params: GetEventsArgs): Promise<Event[]> {
     return json.events.map(e => Event.fromJSON(e));
 }
 
-async function createEvent(payload: any): Promise<any> {
+/**
+ * Creates a new sleep event, POSTing to the correct endpoint
+ */
+async function createEvent(payload: any): Promise<Event> {
   const url = uri('/events/new');
-  const json = await http_post<{ id: string }>(url.toString(), payload);
+  const json = await http_post<{ event: Event}>(url.toString(), payload);
 
-  return { "id": json.id }
+  return Event.fromJSON(json.event);
 }
 
 export {
