@@ -74,7 +74,7 @@
             class="h-full flex flex-col space-y-6 bg-white shadow-xl
             overflow-y-scroll">
             <header
-              class="flex flex-col justify-center min-h-24 bg-red-700 px-4
+              class="flex flex-col justify-center min-h-24 bg-primary-700 px-4
               sm:px-6">
               <h2 class="text-lg leading-7 font-medium text-white">{title}</h2>
               <p class="text-sm text-gray-300">{subtitle}</p>

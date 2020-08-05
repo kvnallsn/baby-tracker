@@ -22,6 +22,7 @@
   import Text from "../components/input/Text.svelte";
   import TextArea from "../components/input/TextArea.svelte";
   import Number from "../components/input/Number.svelte";
+  import DatePicker from "../components/DatePicker.svelte";
 
   // props
   export let open: boolean = false;
@@ -208,13 +209,16 @@
         Date and Time
       </span>
       <div
-        class="group border border-gray-200 p-2 rounded hover:bg-red-700
+        class="group border border-gray-200 p-2 rounded hover:bg-primary-700
         cursor-pointer">
         <Flatpickr
           options={flatpickrOptions}
           bind:value={date}
-          class="group-hover:bg-red-700 group-hover:text-white cursor-pointer" />
+          class="group-hover:bg-primary-700 group-hover:text-white cursor-pointer" />
       </div>
+    </div>
+    <div>
+      <DatePicker />
     </div>
     <Select
       title="Category"

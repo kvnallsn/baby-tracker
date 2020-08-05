@@ -29,7 +29,7 @@
   {#each options as option}
     <div
       class="relative group flex w-full p-2 border rounded border-gray-200
-      hover:bg-red-700 hover:text-white cursor-pointer"
+      hover:bg-primary-700 hover:text-white cursor-pointer"
       on:click={(_e) => value = option.value}>
       <span
         class="flex-1 font-normal truncate text-base sm:text-sm cursor-pointer">

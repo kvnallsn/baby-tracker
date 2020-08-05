@@ -150,7 +150,7 @@
             <table class="min-w-full divide-y divide-gray-200">
               <tbody>
                 {#each $state.events.data as event}
-                  <tr class="group hover:bg-red-600">
+                  <tr class="group hover:bg-primary-600">
                     <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                       <div class="flex items-center">
                         <div class="flex-shrink-0 h-10 w-10 group-hover:text-white">

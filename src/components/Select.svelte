@@ -53,7 +53,7 @@
         class="group cursor-pointer relative w-full rounded-md border
         border-gray-300 bg-white pl-3 pr-10 py-2 text-left focus:outline-none
         focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out
-        duration-150 sm:text-sm sm:leading-5 hover:bg-red-700">
+        duration-150 sm:text-sm sm:leading-5 hover:bg-primary-700">
         <div class="flex items-center space-x-3">
           <!-- selected item -->
           <span class="block truncate group-hover:text-white">
@@ -81,7 +81,7 @@
     <!-- Select popover, show/hide based on select state. -->
     {#if open}
       <div
-        class="absolute mt-1 w-full rounded-md border border-red-600 bg-white
+        class="absolute mt-1 w-full rounded-md border border-primary-600 bg-white
         shadow-lg z-10">
         <ul
           tabindex="-1"

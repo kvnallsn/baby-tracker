@@ -13,7 +13,7 @@
   }
 </style>
 <span
-  class="text-red-500 group-hover:text-white absolute inset-y-0 flex items-center"
+  class="text-primary-500 group-hover:text-white absolute inset-y-0 flex items-center"
   class:right={position === "right"}
   class:left={position === "left"}>
   <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

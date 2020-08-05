@@ -30,7 +30,7 @@ Highlighted: "text-white bg-indigo-600", Not Highlighted: "text-gray-900"
   id="{`listbox-item-{id}`}"
   on:click={clicked}
   role="option"
-  class="group text-gray-900 hover:bg-red-500 hover:text-white cursor-default select-none relative py-2 pl-3 pr-9">
+  class="group text-gray-900 hover:bg-primary-500 hover:text-white cursor-default select-none relative py-2 pl-3 pr-9">
   <div class="flex items-center space-x-3">
     <!-- Selected: "font-semibold", Not Selected: "font-normal" -->
     <span class="font-normal block truncate">{title}</span>
@@ -42,7 +42,7 @@ Highlighted: "text-white bg-indigo-600", Not Highlighted: "text-gray-900"
     Highlighted: "text-white", Not Highlighted: "text-indigo-600"
   -->
   {#if selected}
-    <span class="text-red-500 group-hover:text-white absolute inset-y-0 right-0 flex items-center pr-4">
+    <span class="text-primary-500 group-hover:text-white absolute inset-y-0 right-0 flex items-center pr-4">
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path
             fill-rule="evenodd"
