@@ -70,6 +70,7 @@
         </div>
         <div class="hidden sm:block sm:ml-6">
           <div class="flex">
+            <!-- example navlink
             <a
               href="#"
               class="px-3 py-2 rounded-md text-sm font-medium leading-5
@@ -77,37 +78,13 @@
               focus:bg-gray-700 transition duration-150 ease-in-out">
               Dashboard
             </a>
-            <a
-              href="#"
-              class="ml-4 px-3 py-2 rounded-md text-sm font-medium leading-5
-              text-gray-300 hover:text-white hover:bg-gray-700
-              focus:outline-none focus:text-white focus:bg-gray-700 transition
-              duration-150 ease-in-out">
-              Team
-            </a>
-            <a
-              href="#"
-              class="ml-4 px-3 py-2 rounded-md text-sm font-medium leading-5
-              text-gray-300 hover:text-white hover:bg-gray-700
-              focus:outline-none focus:text-white focus:bg-gray-700 transition
-              duration-150 ease-in-out">
-              Projects
-            </a>
-            <a
-              href="#"
-              class="ml-4 px-3 py-2 rounded-md text-sm font-medium leading-5
-              text-gray-300 hover:text-white hover:bg-gray-700
-              focus:outline-none focus:text-white focus:bg-gray-700 transition
-              duration-150 ease-in-out">
-              Calendar
-            </a>
+            -->
           </div>
         </div>
       </div>
       <div
         class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static
         sm:inset-auto sm:ml-6 sm:pr-0">
-        <Button text="New Record" on:click={(_e) => dispatch('showCreateRecord')} />
         <button
           class="p-1 border-2 border-transparent text-gray-400 rounded-full
           hover:text-white focus:outline-none focus:text-white focus:bg-gray-700
@@ -127,6 +104,7 @@
               .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
         </button>
+        <Button text="New Record" on:click={(_e) => dispatch('showCreateRecord')} />
 
         <!-- Profile dropdown -->
         <div class="ml-3 relative">
@@ -197,13 +175,15 @@
     -->
   <div class="hidden sm:hidden">
     <div class="px-2 pt-2 pb-3">
+      <!-- Example mobile links -->
+      <!--
       <a
         href="#"
         class="block px-3 py-2 rounded-md text-base font-medium text-white
         bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700
         transition duration-150 ease-in-out">
         Dashboard
-      </a>
+        </a>
       <a
         href="#"
         class="mt-1 block px-3 py-2 rounded-md text-base font-medium
@@ -211,20 +191,7 @@
         focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out">
         Team
       </a>
-      <a
-        href="#"
-        class="mt-1 block px-3 py-2 rounded-md text-base font-medium
-        text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none
-        focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out">
-        Projects
-      </a>
-      <a
-        href="#"
-        class="mt-1 block px-3 py-2 rounded-md text-base font-medium
-        text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none
-        focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out">
-        Calendar
-      </a>
+      --->
     </div>
   </div>
 </nav>
