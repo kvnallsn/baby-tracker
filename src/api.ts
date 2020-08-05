@@ -70,11 +70,32 @@ async function createEvent(payload: any): Promise<Event> {
   return Event.fromJSON(json.event);
 }
 
+interface LatestEvents {
+  diaper: Event,
+  nursing: Event,
+  sleep: Event,
+}
+
+/**
+ * Returns the latest of each of the three event categories
+ */
+async function getLatestEvents(baby: string): Promise<LatestEvents> {
+  const url = uri('/events/latest', { baby: baby });
+  const json = await http_get<{ latest: LatestEvents}>(url.toString());
+
+  return {
+    diaper: Event.fromJSON(json.latest.diaper),
+    nursing: Event.fromJSON(json.latest.nursing),
+    sleep: Event.fromJSON(json.latest.sleep)
+  }
+}
+
 export {
   // types
   Event,
 
   // functions
   getEvents,
+  getLatestEvents,
   createEvent,
 }

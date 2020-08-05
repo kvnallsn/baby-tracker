@@ -9,8 +9,9 @@
   import GlobalStyle from "./GlobalStyle.svelte";
 
   // component imports
-  import Navbar from "./components/Navbar.svelte";
   import Button from "./components/Button.svelte";
+  import Card from "./components/Card.svelte";
+  import Navbar from "./components/Navbar.svelte";
 
   // import api
   import * as api from "./api.ts";
@@ -34,18 +35,23 @@
     drawerVisible = true;
   }
 
+  const BABY_ID ="dceae182-1561-4486-9f6a-fe7fa8dae491";
   async function refresh() {
     console.log("refresh");
-    await state.refreshEvents("dceae182-1561-4486-9f6a-fe7fa8dae491");
+    await state.refreshEvents(BABY_ID);
   }
 
   async function loadNextPage() {
     page += 1;
-    await state.loadMoreEvents("dceae182-1561-4486-9f6a-fe7fa8dae491", page);
+    await state.loadMoreEvents(BABY_ID, page);
   }
 
   onMount(async () => {
-    await state.refreshEvents("dceae182-1561-4486-9f6a-fe7fa8dae491");
+    // run both fetches at the same time
+    await Promise.all([
+      state.refreshEvents(BABY_ID),
+      state.refreshLatest(BABY_ID)
+    ]);
   });
 </script>
 
@@ -84,6 +90,44 @@
 <div class="layout h-screen w-screen">
   <Navbar on:showCreateRecord={showCreateRecord} />
   <div class="max-w-6xl w-full mx-auto">
+    <div class="py-4">
+      {#if $state.latest.refreshing}
+        <div class="grid h-full w-full" style="place-items: center">
+          <Spinner
+            size="100"
+            speed="1000"
+            color="#C53030"
+            thickness="2"
+            gap="50"
+          />
+        </div>
+      {:else}
+        <div class="w-full grid grid-cols-1 row-gap-4 md:grid-cols-3 md:col-gap-16 md:row-gap-0">
+          <Card src={diaper} alt="diaper" title="Diaper Change">
+            {$state.latest.diaper?.event.detail.get_condition()}, {$state.latest.diaper?.event.detail.get_leakage()}
+            <div class="px-6 py-4" slot="footer">
+              <span class="text-gray-500">{$state.latest.diaper?.at.toLocaleString('en-US')}</span>
+            </div>
+          </Card>
+          <Card src={bottle} alt="nursing" title="Nursing">
+            {$state.latest.nursing?.event.detail.get_source()}, {$state.latest.nursing?.event.detail.get_detail()}
+            <div class="px-6 py-4" slot="footer">
+              <span class="text-gray-500">{$state.latest.nursing?.at.toLocaleString('en-US')}</span>
+            </div>
+          </Card>
+          <Card src={night} alt="sleep" title="Sleep">
+            {#if $state.latest.sleep?.event.detail.woke_up}
+              Woke up at {$state.latest.sleep?.event.detail.woke_up?.toLocaleString('en-US')} 
+            {:else}
+              Baby still snoozing
+            {/if}
+            <div class="px-6 py-4" slot="footer">
+              <span class="text-gray-500">{$state.latest.sleep?.at.toLocaleString('en-US')}</span>
+            </div>
+          </Card>
+        </div>
+      {/if}
+    </div>
     {#if $state.events.refreshing}
       <div class="grid h-full w-full" style="place-items: center">
         <Spinner
@@ -136,13 +180,13 @@
                     </td>
                     <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                       {#if event.event.type === EventType.Diaper}
-                        <div class="cell-title">{event.event.detail.status()}</div>
-                        <div class="cell-subtitle">{event.event.detail.state()}</div>
+                        <div class="cell-title">{event.event.detail.get_condition()}</div>
+                        <div class="cell-subtitle">{event.event.detail.get_leakage()}</div>
                       {:else if event.event.type === EventType.Nursing}
                         <div class="cell-title">{event.event.detail.get_source()}</div>
                         <div class="cell-subtitle">Source</div>
                       {:else if event.event.type === EventType.Sleep}
-                        Sleep
+                        <div class="cell-title">Sleep</div>
                       {/if}
                     </td>
                     <td class="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -156,7 +200,7 @@
                       {:else if event.event.type === EventType.Nursing}
                         <div class="cell-title">{event.event.detail.get_detail()}</div>
                       {:else if event.event.type === EventType.Sleep}
-                        Sleep
+                        <div class="cell-title">Sleep</div>
                       {/if}
                     </td>
                     <td class="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">

@@ -4,17 +4,6 @@ import { writable } from "svelte/store";
 
 import * as api from "./api";
 
-interface StateEvents {
-  refreshing: boolean;
-  hasMore: boolean;
-  data: api.Event[];
-}
-
-interface State {
-  date: Date;
-  events: StateEvents;
-}
-
 function binarySearch(arr: api.Event[], event: api.Event): number {
   if (arr.length == 0) {
     return 0;
@@ -44,6 +33,25 @@ function binarySearch(arr: api.Event[], event: api.Event): number {
   return m;
 }
 
+interface Events {
+  refreshing: boolean;
+  hasMore: boolean;
+  data: api.Event[];
+}
+
+interface Latest {
+  refreshing: boolean;
+  diaper: api.Event;
+  nursing: api.Event;
+  sleep: api.Event;
+}
+
+interface State {
+  date: Date;
+  events: Events;
+  latest: Latest;
+}
+
 function createState() {
   const { subscribe, set, update } = writable({
    date: new Date(Date.now()),
@@ -51,6 +59,12 @@ function createState() {
      refreshing: false,
      hasMore: true,
      data: [],
+   },
+   latest: {
+    refreshing: false,
+    diaper: undefined,
+    nursing: undefined,
+    sleep: undefined
    }
   } as State);
 
@@ -99,6 +113,25 @@ function createState() {
       update(s => {
         const idx = binarySearch(s.events.data, event);
         s.events.data.splice(idx, 0, event);
+        return s;
+      });
+    },
+
+    refreshLatest: async (baby: string) => {
+      update(s => {
+        s.latest.refreshing = true;
+        return s;
+      });
+
+      //await tick();
+
+      const latest = await api.getLatestEvents(baby);
+
+      update(s => {
+        s.latest.refreshing = false;
+        s.latest.diaper = latest.diaper;
+        s.latest.nursing = latest.nursing;
+        s.latest.sleep = latest.sleep;
         return s;
       });
     },

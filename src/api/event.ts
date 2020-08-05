@@ -116,9 +116,9 @@ export class Event {
         event.at,
         new DiaperDetail(
           detail.condition,
+          detail.leakage,
           detail.brand,
-          detail.size,
-          detail.leakage
+          detail.size
         ),
         event.notes
       );
@@ -153,23 +153,23 @@ export class DiaperDetail {
   /** Condition the diaper is in (see `Condition`) */
   condition: Condition;
 
+  /** Whether or not the diaper leaked (or worse...blew out) */
+  leakage: Leakage;
+
   /** Brand of the diaper (e.g., huggies, pampers, etc. */
   brand: string;
 
   /** Size of the diaper */
   size: number;
 
-  /** Whether or not the diaper leaked (or worse...blew out) */
-  leakage: Leakage;
-
-  constructor(condition: Condition, brand: string, size: number, leakage: Leakage) {
+  constructor(condition: Condition, leakage: Leakage, brand: string, size: number) {
     this.condition = condition;
+    this.leakage = leakage;
     this.brand = brand;
     this.size = size;
-    this.leakage = leakage;
   }
 
-  status(): string {
+  get_condition(): string {
     switch (this.condition) {
       case Condition.Dry:
         return "Dry";
@@ -185,7 +185,7 @@ export class DiaperDetail {
     }
   }
 
-  state(): string {
+  get_leakage(): string {
     switch (this.leakage) {
       case Leakage.None:
         return "No Leakage";
