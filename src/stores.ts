@@ -35,6 +35,7 @@ function binarySearch(arr: api.Event[], event: api.Event): number {
 
 interface Events {
   refreshing: boolean;
+  loadingMore: boolean;
   hasMore: boolean;
   data: api.Event[];
 }
@@ -57,6 +58,7 @@ function createState() {
    date: new Date(Date.now()),
    events: {
      refreshing: false,
+     loadingMore: false,
      hasMore: true,
      data: [],
    },
@@ -96,12 +98,18 @@ function createState() {
     },
 
     loadMoreEvents: async (baby: string, page: number) => {
+      update(s => {
+        s.events.loadingMore = true;
+        return s;
+      });
+
       const events = await api.getEvents({
         "baby": baby,
         "offset": page * 10,
       });
 
       update(s => {
+        s.events.loadingMore = false;
         s.events.hasMore = events.length == 10;
         s.events.data.push(...events);
         return s;

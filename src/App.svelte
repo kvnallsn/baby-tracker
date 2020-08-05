@@ -92,7 +92,7 @@
   <div class="max-w-6xl w-full mx-auto">
     <div class="py-4">
       {#if $state.latest.refreshing}
-        <div class="grid h-full w-full" style="place-items: center">
+        <div class="grid w-full bg-gray-50 shadow-inner" style="place-items: center; height: 278px">
           <Spinner
             size="100"
             speed="1000"
@@ -215,6 +215,17 @@
       </div>
     {/if}
   </div>
+  {#if $state.events.loadingMore}
+    <div class="grid h-full w-full" style="place-items: center">
+      <Spinner
+        size="100"
+        speed="1000"
+        color="#C53030"
+        thickness="2"
+        gap="50"
+      />
+    </div>
+  {/if}
   <SvelteInfiniteScroll
     window={true}
     hasMore={$state.events.hasMore}
