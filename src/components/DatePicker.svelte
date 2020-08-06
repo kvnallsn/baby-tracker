@@ -17,8 +17,12 @@
   let month = '';
   let year = '';
 
-  let days = 0;
-  let offset = 0;
+  let hour = 12;
+  let minute = 0;
+
+  let days = 0;         // Number of days in the currently displayed month
+  let offset = 0;       // Number of days to skip before the month starts
+  let padding = 0;      // Number of days to pad at the end of the month to reach a full row
 
   function toggleVisible() {
     showDatepicker = !showDatepicker;
@@ -28,6 +32,8 @@
     let today = new Date();
     month = today.getMonth();
     year = today.getFullYear();
+    hour = today.getHours();
+    minute = today.getMinutes();
     datepickerValue = new Date(year, month, today.getDate()).toDateString();
   }
 
@@ -46,10 +52,18 @@
 
   function getNoOfDays() {
     // Day 0 is the last day in the previous month
-    days = (month == 11 ? new Date(year + 1, 0, 0) : new Date(year, month + 1, 0)).getDate();
+    let lastDay = month == 11 ? new Date(year + 1, 0, 0) : new Date(year, month + 1, 0);
 
+    // get the date (1 - N)
+    days = lastDay.getDate();
+
+    // getDay() returns 0 - 6, where 0 is Sunday and 6 is Saturday
     // find where to start calendar day of week
     offset = new Date(year, month).getDay();
+
+    // find how many days to pad at the end
+    // NOTE: we use 6, not 7 because `getDay()` is zero-based
+    padding = 6 - lastDay.getDay();
   }
 
   function prevMonth() {
@@ -72,6 +86,12 @@
     }
 
     getNoOfDays();
+  }
+
+  function formatMinute(value) {
+    if (value.length === 1) {
+      value = '0' + value;
+    }
   }
 
   onMount(() => {
@@ -149,23 +169,24 @@
             </div>
           </div>
 
-          <div class="flex flex-wrap mb-3 -mx-1">
-            {#each DAYS as day, index}
-              <div style="width: 14.26%" class="px-1">
+          <div class="grid grid-cols-7">
+            {#each DAYS as day}
+              <div class="px-1">
                 <div class="text-gray-800 font-medium text-center text-xs">{day}</div>
               </div>
             {/each}
-          </div>
 
-          <div class="flex flex-wrap -mx-1">
+            <!-- separator line between days of month (Sun / Mon / Tue / etc.) and calendar -->
+            <hr class="col-span-7 my-2" />
+
+            <!-- padding before first day of month -->
             {#each [...Array(offset).keys()] as _}
-              <div 
-                style="width: 14.28%"
-                class="text-center border p-1 border-transparent text-sm"	
-                ></div>
+              <div class="p-1" />
             {/each}
+
+            <!-- the days of each month -->
             {#each [...Array(days).keys()] as date}
-              <div style="width: 14.28%" class="px-1 mb-1">
+              <div class="px-1 mb-1">
                 <div
                   on:click={_e => getDateValue(date + 1)}
                   class="cursor-pointer text-center text-sm leading-none rounded-full leading-loose transition ease-in-out duration-100"
@@ -175,6 +196,61 @@
                 </div>
               </div>
             {/each}
+
+            <!-- padding after last day of month to finish grid -->
+            {#each [...Array(padding).keys()] as _}
+              <div class="p-1" />
+            {/each}
+
+            <!-- separator line between date and time picker -->
+            <hr class="col-span-7 mt-1 mb-3" />
+
+            <div class="col-span-2 text-center text-sm leading-none">
+              <div class="flex flex-row w-full rounded-lg relative items-center h-full">
+                <button
+                  class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-l cursor-pointed outline-none"
+                  on:click="{_e => { hour = (hour == 1) ? 12 : hour - 1 }}"
+                >
+                  <span class="m-auto text-2xl font-thin">-</span>
+                </button>
+                <span class="text-sm leading-none px-4">{hour}</span>
+                <button
+                  class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-r cursor-pointed outline-none"
+                  on:click="{_e => { hour = (hour == 12) ? 1 : hour + 1 }}"
+                >
+                  <span class="m-auto text-2xl font-thin">+</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-span-1 text-center text-sm leading-none">
+              <div class="h-full flex justify-center items-center">:</div>
+            </div>
+            <div class="col-span-2 text-center text-sm leading-none">
+              <div class="flex flex-row w-full rounded-lg relative items-center h-full">
+                <button
+                  class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-l cursor-pointed outline-none"
+                  on:click="{_e => { minute = (minute == 0) ? 59 : minute - 1 }}"
+                >
+                  <span class="m-auto text-2xl font-thin">-</span>
+                </button>
+                <span class="text-sm leading-none px-4">
+                  {#if minute < 10}
+                    {'0' + minute}
+                  {:else}
+                    {minute}
+                  {/if}
+                </span>
+                <button
+                  class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-r cursor-pointed outline-none"
+                  on:click="{_e => { minute = (minute == 59) ? 0 : minute + 1 }}"
+                >
+                  <span class="m-auto text-2xl font-thin">+</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-span-2 text-center text-sm leading-none">
+              <div class="h-full flex justify-center items-center">AM</div>
+            </div>
           </div>
         </div>
       {/if}
