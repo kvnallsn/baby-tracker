@@ -18,7 +18,7 @@
   import { EventType } from "./api/event.ts";
 
   // state imports
-  import { state } from "./stores.ts";
+  import { state, date } from "./stores.ts";
 
   // svg imports
   import diaper from "./svg/010-diaper.svg";
@@ -31,7 +31,7 @@
   let page = 0;
 
   function showCreateRecord() {
-    state.now();
+    date.set(new Date());
     drawerVisible = true;
   }
 

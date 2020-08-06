@@ -48,14 +48,12 @@ interface Latest {
 }
 
 interface State {
-  date: Date;
   events: Events;
   latest: Latest;
 }
 
 function createState() {
   const { subscribe, set, update } = writable({
-   date: new Date(Date.now()),
    events: {
      refreshing: false,
      loadingMore: false,
@@ -143,12 +141,9 @@ function createState() {
         return s;
       });
     },
-
-    now: () => update(s => {
-      s.date = new Date(Date.now());
-      return s;
-    }),
   }
 }
 
 export const state = createState();
+
+export const date = writable(new Date());

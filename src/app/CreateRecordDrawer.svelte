@@ -2,11 +2,10 @@
   // npm imports
   import { createEventDispatcher, onMount } from "svelte";
   import { createForm } from "svelte-forms-lib";
-  import Flatpickr from "svelte-flatpickr";
   import * as yup from "yup";
 
   // state imports
-  import { state } from "../stores.ts";
+  import { state, date } from "../stores.ts";
 
   // Models
   import * as Diaper from "../api/diaper.ts";
@@ -72,14 +71,7 @@
     { value: Nursing.Side.Pumped, text: "Pumped" },
   ];
 
-  let flatpickrOptions = {
-    dateFormat: "M d, Y @ h:i K",
-    enableTime: true,
-    minuteIncrement: 1,
-  };
-
   // reactive data
-  $: date = $state.date;
 
   // mutable data
   let category;
@@ -100,6 +92,8 @@
   let diaperSizeSchema = yup.number().min(0).max(7).required();
 
   function resetMutableData() {
+    date.set(new Date());
+
     errors = [];
     category = Category.Diaper;
     notes = "";
@@ -160,7 +154,7 @@
       if (event !== undefined) {
         const payload = {
           baby_id: "dceae182-1561-4486-9f6a-fe7fa8dae491",
-          at: date.toISOString(),
+          at: $date.toISOString(),
           notes: notes,
           event: event,
         };
@@ -205,20 +199,7 @@
       </div>
     {/if}
     <div>
-      <span class="block text-sm leading-5 font-medium text-gray-700">
-        Date and Time
-      </span>
-      <div
-        class="group border border-gray-200 p-2 rounded hover:bg-primary-700
-        cursor-pointer">
-        <Flatpickr
-          options={flatpickrOptions}
-          bind:value={date}
-          class="group-hover:bg-primary-700 group-hover:text-white cursor-pointer" />
-      </div>
-    </div>
-    <div>
-      <DatePicker />
+      <DatePicker bind:value={$date} />
     </div>
     <Select
       title="Category"
@@ -267,11 +248,11 @@
       {/if}
     {:else if category == Category.Sleep}
       <div class="text-base sm:text-sm">
-        Little one fell asleep at {date.toLocaleTimeString('en-US')}
+        Little one fell asleep at {$date.toLocaleTimeString('en-US')}
       </div>
     {:else if category == Category.Awake}
       <div class="text-base sm:text-sm">
-        Little one woke up at {date.toLocaleTimeString('en-US')}
+        Little one woke up at {$date.toLocaleTimeString('en-US')}
       </div>
     {/if}
 
