@@ -1,53 +1,64 @@
 <!-- component -->
 <script lang="ts">
   // npm imports
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
+
+  // component imports
+  import Button from "./Button.svelte";
+  import TwoItemToggle from "./TwoItemToggle.svelte";
 
   // imports
   import { clickAway } from '../actions/clickAway.ts';
+
+  // props
+  export let value: Date = new Date();
 
   // constants
   const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   // mutable data
-  let showDatepicker = false;
-  let datepickerValue = '';
+  let date = new Date();
 
-  let month = '';
-  let year = '';
+  // reactive properties
+  $: year = date.getFullYear();
+  $: month = date.getMonth();
+  $: day = date.getDate();          // getDate() returns day of month, getDay() returns day of week
+  $: hour = date.getHours();
+  $: minute = date.getMinutes();
+  $: display = `${value.toLocaleDateString('en-US')} @ ${value.toLocaleTimeString('en-US')}`;
 
-  let hour = 12;
-  let minute = 0;
-
+  let visible = false;  // True to show datepicker, false to hide
+  let tod = 'AM';       // Time of Day (AM / PM)
   let days = 0;         // Number of days in the currently displayed month
   let offset = 0;       // Number of days to skip before the month starts
   let padding = 0;      // Number of days to pad at the end of the month to reach a full row
 
   function toggleVisible() {
-    showDatepicker = !showDatepicker;
+    visible = !visible;
   }
 
-  function initDate() {
-    let today = new Date();
-    month = today.getMonth();
-    year = today.getFullYear();
-    hour = today.getHours();
-    minute = today.getMinutes();
-    datepickerValue = new Date(year, month, today.getDate()).toDateString();
+  function areEqual(l: Date, r: Date): boolean {
+    // for some reason directly returning this does not work but
+    // storing it in a temporary value does? Damn Javascript
+    const t =
+      (l.getFullYear() == r.getFullYear()) &&
+      (l.getMonth() == r.getMonth()) &&
+      (l.getDate() == r.getDate());
+
+    return t;
   }
 
-  function isToday(day) {
-    const today = new Date();
-    const d = new Date(year, month, day);
-
-    return today.toDateString() === d.toDateString();
+  function isToday(day: number): boolean {
+    return areEqual(new Date(), new Date(year, month, day));
   }
 
-  function getDateValue(date) {
-    let selectedDate = new Date(year, month, date);
-    datepickerValue = selectedDate.toDateString();
-    showDatepicker = false;
+  async function getDateValue(d) {
+    /*let selectedDate = new Date(year, month, date);*/
+    /*datepickerValue = `${selectedDate.toLocaleDateString('en-US')} @ ${selectedDate.toLocaleTimeString('en-US')}`;*/
+    //visible = false;
+    value = new Date(year, month, d, hour, minute);
+    await tick();
   }
 
   function getNoOfDays() {
@@ -66,24 +77,26 @@
     padding = 6 - lastDay.getDay();
   }
 
-  function prevMonth() {
+  async function prevMonth() {
     if (month == 0) {
-      month = 11;
-      year -= 1;
+      date = new Date(year - 1, 11, day, hour, minute);
     } else {
-      month -= 1;
+      date = new Date(year, month - 1, day, hour, minute);
     }
+
+    await tick();
 
     getNoOfDays();
   }
 
-  function nextMonth() {
+  async function nextMonth() {
     if (month == 11) {
-      month = 0;
-      year += 1;
+      date = new Date(year + 1, 0, day, hour, minute);
     } else {
-      month += 1;
+      date = new Date(year, month + 1, day, hour, minute);
     }
+
+    await tick();
 
     getNoOfDays();
   }
@@ -95,13 +108,16 @@
   }
 
   onMount(() => {
-    initDate();
     getNoOfDays();
   });
 </script>
 
 <style>
   .today {
+    @apply border border-primary-500;
+  }
+
+  .selected {
     @apply bg-primary-500 text-white;
   }
 
@@ -126,9 +142,9 @@
     <input 
       type="text"
       readonly
-      value={datepickerValue}
+      value={display}
       on:click={toggleVisible}
-      on:keydown="{e => { if (e.key === "Escape") { showDatepicker = false }}}"
+      on:keydown="{e => { if (e.key === "Escape") { visible = false }}}"
       class="form-input block w-full pl-2 pr-10 sm:text-sm sm:leading-5 group-hover:bg-primary-700 group-hover:text-white z-20"
       placeholder="Select date">
 
@@ -138,11 +154,11 @@
         </svg>
       </div>
 
-      {#if showDatepicker}
+      {#if visible}
         <div 
           use:clickAway
           class="w-full bg-white mt-12 rounded-lg shadow border border-primary-700 p-4 absolute top-0 left-0 z-10"
-          on:click_away="{_e => showDatepicker = false}">
+          on:click_away="{_e => visible = false}">
 
           <div class="flex justify-between items-center mb-2">
             <div>
@@ -185,14 +201,14 @@
             {/each}
 
             <!-- the days of each month -->
-            {#each [...Array(days).keys()] as date}
+            {#each [...Array(days).keys()] as d}
               <div class="px-1 mb-1">
                 <div
-                  on:click={_e => getDateValue(date + 1)}
-                  class="cursor-pointer text-center text-sm leading-none rounded-full leading-loose transition ease-in-out duration-100"
-                  class:today="{isToday(date + 1)}"
-                  class:not-today="{!isToday(date + 1)}">
-                  {date + 1}
+                  on:click={_e => getDateValue(d+1)}
+                  class="{`cursor-pointer text-center text-sm leading-none rounded-full leading-loose transition ease-in-out duration-100 ${isToday(d + 1) ? 'today' : 'not-today'}`}"
+                  class:selected="{areEqual(value, new Date(year, month, d+1))}"
+                  >
+                  {d + 1}
                 </div>
               </div>
             {/each}
@@ -249,7 +265,21 @@
               </div>
             </div>
             <div class="col-span-2 text-center text-sm leading-none">
-              <div class="h-full flex justify-center items-center">AM</div>
+              <TwoItemToggle left="AM" right="PM" bind:value={tod} />
+            </div>
+
+            <!-- separator line between time and actions-->
+            <hr class="col-span-7 mt-3 mb-3" />
+
+            <div class="col-span-3 text-center text-sm leading-none">
+              <Button text="Now" on:click="{_e => value = new Date() }" />
+            </div>
+
+            <div class="col-span-1 text-center text-sm leading-none">
+            </div>
+
+            <div class="col-span-3 text-center text-sm leading-none">
+              <Button text="Close" on:click="{_e => visible = false}" />
             </div>
           </div>
         </div>
