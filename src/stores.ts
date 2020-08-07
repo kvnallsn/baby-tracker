@@ -131,6 +131,35 @@ function createState() {
       update(s => {
         const idx = binarySearch(s.events.data, event);
         s.events.data.splice(idx, 0, event);
+
+        // if this event is more recent than the latest event, update
+        // that structure accordingly
+        switch (event.event.type) {
+          case 'diaper': {
+            if (s.latest.diaper === undefined || s.latest.diaper.at < event.at) {
+              s.latest.diaper = event;
+            }
+            break;
+          }
+
+          case 'nursing': {
+            if (s.latest.nursing === undefined || s.latest.nursing.at < event.at) {
+              s.latest.nursing = event;
+            }
+            break;
+          }
+
+          case 'sleep': {
+            if (s.latest.sleep === undefined || s.latest.sleep.at < event.at) {
+              s.latest.sleep = event;
+            }
+            break;
+          }
+
+          default:
+            break;    // do nothing
+        }
+
         return s;
       });
     },

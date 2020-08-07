@@ -257,6 +257,9 @@ export class SleepDetail {
 }
 
 export default {
+  DiaperDetail,
+  SleepDetail,
+  NursingDetail,
   EventType,
   Condition,
   Leakage,
