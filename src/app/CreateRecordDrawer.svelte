@@ -159,12 +159,12 @@
         };
 
         await state.createEvent(payload);
+
+        resetMutableData();
+        dispatch("close");
       }
     } catch (e) {
       console.error(e);
-    } finally {
-      resetMutableData();
-      dispatch("close");
     }
   }
 

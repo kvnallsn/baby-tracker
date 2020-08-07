@@ -146,8 +146,12 @@
         </div>
       {/if}
     </div>
+    <div class="flex justify-between items-center">
+      <span class="text-3xl p-2">Events</span>
+      <Button text="Refresh" on:click={refresh} />
+    </div>
     {#if $state.events.refreshing}
-      <div class="grid h-full w-full" style="place-items: center">
+      <div class="grid w-full bg-gray-50 shadow-inner" style="place-items: center; height: 278px">
         <Spinner
           size="100"
           speed="1000"
@@ -156,11 +160,16 @@
           gap="50"
         />
       </div>
-    {:else}
-      <div class="flex justify-between items-center">
-        <span class="text-3xl p-2">Events</span>
-        <Button text="Refresh" on:click={refresh} />
+      <div class="grid h-full w-full" style="place-items: center">
       </div>
+    {:else if $state.events.error !== undefined}
+      <div class="grid w-full bg-gray-50 shadow-inner" style="place-items: center; height: 278px">
+        <div class="text-center">
+          <div class="text-3xl text-red-600 font-bold">Error Loading Events</div>
+          <div class="text-xl font-normal mt-4">Please try again in a couple of minutes</div>
+        </div>
+      </div>
+    {:else}
       <hr class="my-1" />
       <div class="flex flex-col">
         <div class="-my-2 py-2 overflow-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">

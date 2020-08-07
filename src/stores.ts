@@ -35,6 +35,7 @@ function binarySearch(arr: api.Event[], event: api.Event): number {
 
 interface Events {
   refreshing: boolean;
+  error?: string;
   loadingMore: boolean;
   hasMore: boolean;
   data: api.Event[];
@@ -56,6 +57,7 @@ function createState() {
   const { subscribe, set, update } = writable({
    events: {
      refreshing: false,
+     error: undefined,
      loadingMore: false,
      hasMore: true,
      data: [],
@@ -83,16 +85,26 @@ function createState() {
 
       await tick();
 
-      const events = await api.getEvents({
-        "baby": baby,
-      });
+      try {
+        const events = await api.getEvents({
+          "baby": baby,
+        });
 
-      update(s => {
-        s.events.refreshing = false;
-        s.events.hasMore = events.length == 10;
-        s.events.data = events;
-        return s;
-      });
+        update(s => {
+          s.events.refreshing = false;
+          s.events.error = undefined;
+          s.events.hasMore = events.length == 10;
+          s.events.data = events;
+          return s;
+        });
+      } catch (e) {
+        update(s => {
+          s.events.refreshing = false;
+          s.events.error = "Failed to load events";
+          s.events.hasMore = false;
+          return s;
+        });
+      }
     },
 
     loadMoreEvents: async (baby: string, page: number) => {
@@ -131,15 +143,19 @@ function createState() {
 
       //await tick();
 
-      const latest = await api.getLatestEvents(baby);
+      try {
+        const latest = await api.getLatestEvents(baby);
 
-      update(s => {
-        s.latest.refreshing = false;
-        s.latest.diaper = latest.diaper;
-        s.latest.nursing = latest.nursing;
-        s.latest.sleep = latest.sleep;
-        return s;
-      });
+        update(s => {
+          s.latest.refreshing = false;
+          s.latest.diaper = latest.diaper;
+          s.latest.nursing = latest.nursing;
+          s.latest.sleep = latest.sleep;
+          return s;
+        });
+      } catch (e) {
+        // TODO
+      }
     },
   }
 }
