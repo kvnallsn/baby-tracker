@@ -1,7 +1,6 @@
 <script lang="ts">
   // npm imports
   import { createEventDispatcher, onMount } from "svelte";
-  import { createForm } from "svelte-forms-lib";
   import * as yup from "yup";
 
   // state imports
