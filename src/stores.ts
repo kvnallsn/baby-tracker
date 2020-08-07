@@ -42,9 +42,9 @@ interface Events {
 
 interface Latest {
   refreshing: boolean;
-  diaper: api.Event;
-  nursing: api.Event;
-  sleep: api.Event;
+  diaper?: api.Event;
+  nursing?: api.Event;
+  sleep?: api.Event;
 }
 
 interface State {

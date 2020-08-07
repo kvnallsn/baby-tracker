@@ -104,25 +104,43 @@
       {:else}
         <div class="w-full grid grid-cols-1 row-gap-4 md:grid-cols-3 md:col-gap-16 md:row-gap-0">
           <Card src={diaper} alt="diaper" title="Diaper Change">
-            {$state.latest.diaper?.event.detail.get_condition()}, {$state.latest.diaper?.event.detail.get_leakage()}
+            {#if $state.latest.diaper === undefined}
+              No diaper changes found.
+            {:else}
+              {$state.latest.diaper.event.detail.get_condition()}, {$state.latest.diaper.event.detail.get_leakage()}
+            {/if}
             <div class="px-6 py-4" slot="footer">
-              <span class="text-gray-500">{$state.latest.diaper?.at.toLocaleString('en-US')}</span>
+              {#if $state.latest.diaper !== undefined}
+                <span class="text-gray-500">{$state.latest.diaper.at.toLocaleString('en-US')}</span>
+              {/if}
             </div>
           </Card>
           <Card src={bottle} alt="nursing" title="Nursing">
-            {$state.latest.nursing?.event.detail.get_source()}, {$state.latest.nursing?.event.detail.get_detail()}
+            {#if $state.latest.nursing === undefined}
+              No nursings found.
+            {:else}
+              {$state.latest.nursing.event.detail.get_source()}, {$state.latest.nursing.event.detail.get_detail()}
+            {/if}
             <div class="px-6 py-4" slot="footer">
-              <span class="text-gray-500">{$state.latest.nursing?.at.toLocaleString('en-US')}</span>
+              {#if $state.latest.diaper !== undefined}
+                <span class="text-gray-500">{$state.latest.nursing.at.toLocaleString('en-US')}</span>
+              {/if}
             </div>
           </Card>
           <Card src={night} alt="sleep" title="Sleep">
-            {#if $state.latest.sleep?.event.detail.woke_up}
-              Woke up at {$state.latest.sleep?.event.detail.woke_up?.toLocaleString('en-US')} 
+            {#if $state.latest.nursing === undefined}
+              No sleep events found
             {:else}
-              Baby still snoozing
+              {#if $state.latest.sleep.event.detail.woke_up}
+                Woke up at {$state.latest.sleep.event.detail.woke_up.toLocaleString('en-US')} 
+              {:else}
+                Baby still snoozing
+              {/if}
             {/if}
             <div class="px-6 py-4" slot="footer">
-              <span class="text-gray-500">{$state.latest.sleep?.at.toLocaleString('en-US')}</span>
+              {#if $state.latest.nursing !== undefined}
+                <span class="text-gray-500">{$state.latest.sleep.at.toLocaleString('en-US')}</span>
+              {/if}
             </div>
           </Card>
         </div>
