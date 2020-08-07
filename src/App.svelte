@@ -11,6 +11,7 @@
   // component imports
   import Button from "./components/Button.svelte";
   import Card from "./components/Card.svelte";
+  import FlatButton from "./components/FlatButton.svelte";
   import Navbar from "./components/Navbar.svelte";
 
   // import api
@@ -24,6 +25,9 @@
   import diaper from "./svg/010-diaper.svg";
   import bottle from "./svg/004-feeding bottle.svg";
   import night from "./svg/026-night.svg";
+
+  // constant data
+  const locale = 'en-US';
 
   // mutable data
   let alertVisible: boolean = false;
@@ -107,40 +111,54 @@
             {#if $state.latest.diaper === undefined}
               No diaper changes found.
             {:else}
-              {$state.latest.diaper.event.detail.get_condition()}, {$state.latest.diaper.event.detail.get_leakage()}
+              <div class="flex justify-between text-xs text-gray-400 italic">
+                <span>{$state.latest.diaper.at.toLocaleDateString(locale)}</span>
+                <span>{$state.latest.diaper.at.toLocaleTimeString(locale)}</span>
+              </div>
+              <hr class="py-2" />
+              <p class="text-gray-600 text-base">
+                {$state.latest.diaper.event.detail.get_condition()}, {$state.latest.diaper.event.detail.get_leakage()}
+              </p>
             {/if}
-            <div class="px-6 py-4" slot="footer">
-              {#if $state.latest.diaper !== undefined}
-                <span class="text-gray-500">{$state.latest.diaper.at.toLocaleString('en-US')}</span>
-              {/if}
+            <div class="flex justify-start" slot="footer">
+              <FlatButton text="New" />
             </div>
           </Card>
           <Card src={bottle} alt="nursing" title="Nursing">
             {#if $state.latest.nursing === undefined}
               No nursings found.
             {:else}
-              {$state.latest.nursing.event.detail.get_source()}, {$state.latest.nursing.event.detail.get_detail()}
+              <div class="flex justify-between text-xs text-gray-400 italic">
+                <span>{$state.latest.nursing.at.toLocaleDateString(locale)}</span>
+                <span>{$state.latest.nursing.at.toLocaleTimeString(locale)}</span>
+              </div>
+              <hr class="py-2" />
+              <p class="text-gray-600 text-base">
+                {$state.latest.nursing.event.detail.get_source()}, {$state.latest.nursing.event.detail.get_detail()}
+              </p>
             {/if}
-            <div class="px-6 py-4" slot="footer">
-              {#if $state.latest.diaper !== undefined}
-                <span class="text-gray-500">{$state.latest.nursing.at.toLocaleString('en-US')}</span>
-              {/if}
+            <div class="" slot="footer">
             </div>
           </Card>
           <Card src={night} alt="sleep" title="Sleep">
             {#if $state.latest.nursing === undefined}
               No sleep events found
             {:else}
-              {#if $state.latest.sleep.event.detail.woke_up}
-                Woke up at {$state.latest.sleep.event.detail.woke_up.toLocaleString('en-US')} 
-              {:else}
-                Baby still snoozing
-              {/if}
+              <div class="flex justify-between text-xs text-gray-400 italic">
+                <span>{$state.latest.sleep.at.toLocaleDateString(locale)}</span>
+                <span>{$state.latest.sleep.at.toLocaleTimeString(locale)}</span>
+              </div>
+              <hr class="py-2" />
+              <p class="text-gray-600 text-base">
+                {#if $state.latest.sleep.event.detail.woke_up}
+                  Woke up at {$state.latest.sleep.event.detail.woke_up.toLocaleString('en-US')} 
+                {:else}
+                  Baby still snoozing
+                {/if}
+              </p>
             {/if}
-            <div class="px-6 py-4" slot="footer">
-              {#if $state.latest.nursing !== undefined}
-                <span class="text-gray-500">{$state.latest.sleep.at.toLocaleString('en-US')}</span>
-              {/if}
+            <div class="justify-start items-end" slot="footer">
+              <FlatButton text="WOKE UP" color="primary" />
             </div>
           </Card>
         </div>
