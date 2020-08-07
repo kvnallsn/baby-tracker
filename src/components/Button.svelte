@@ -1,7 +1,8 @@
 <script lang="ts">
   // Properties
-  export let text: string;
-  export let color: string = "white";
+  export let text: string;                // Text to display on button, no default (required)
+  export let color: string = "white";     // Color of this button, default is "white".
+  export let full: boolean = false;       // Switch to toggle if this button should take the full width of it's parent, default if false
 </script>
 
 <style>
@@ -36,22 +37,36 @@
   .blue:active {
     @apply text-blue-800 bg-blue-500;
   }
+
+  .primary {
+    @apply border-gray-300 bg-primary-700 text-white;
+  }
+
+  .primary:hover {
+    @apply bg-primary-600;
+  }
+
+  .primary:focus {
+    @apply border-primary-300 outline-none;
+  }
+
+  .primary:active {
+    @apply text-primary-800 bg-primary-500;
+  }
 </style>
 
-<div class="relative inline-block text-left">
-  <div>
-    <span class="rounded-md shadow-sm">
-      <button
-        type="button"
-        on:click
-        class={`inline-flex justify-center w-full rounded-md border px-4 py-2
-        text-sm leading-5 font-medium focus:outline-none transition ease-in-out
-        duration-150 ${color || ''}`}
-        id="options-menu"
-        aria-haspopup="true"
-        aria-expanded="true">
-        {text}
-      </button>
-    </span>
-  </div>
+<div class="relative inline-block text-left" class:w-full={full}>
+  <span class="rounded-md shadow-sm">
+    <button
+      type="button"
+      on:click
+      class={`inline-flex justify-center w-full rounded-md border px-4 py-2
+      text-sm leading-5 font-medium focus:outline-none transition ease-in-out
+      duration-150 ${color || ''}`}
+      id="options-menu"
+      aria-haspopup="true"
+      aria-expanded="true">
+      {text}
+    </button>
+  </span>
 </div>
