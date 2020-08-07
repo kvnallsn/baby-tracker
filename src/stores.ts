@@ -129,8 +129,16 @@ function createState() {
     createEvent: async (payload: any) => {
       const event = await api.createEvent(payload);
       update(s => {
-        const idx = binarySearch(s.events.data, event);
-        s.events.data.splice(idx, 0, event);
+        if (s.events.data.length == 0) {
+          // the array is empty, always add
+          s.events.data.push(event);
+        } else if (event.at >= s.events.data[s.events.data.length - 1].at) {
+          // if this event is at least as new as the bottom of our list, then
+          // add it to our data.  Otherwise wait until the user scrolls to it
+          // before adding to our data.
+          const idx = binarySearch(s.events.data, event);
+          s.events.data.splice(idx, 0, event);
+        }
 
         // if this event is more recent than the latest event, update
         // that structure accordingly
