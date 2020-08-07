@@ -12,21 +12,26 @@
 
   // props
   export let value: Date = new Date();
+  export let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  export let locale: string = 'en-US';
 
   // constants
-  const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   // mutable data
   let date = new Date();
 
   // reactive properties
+  // synced to the displayed month
   $: year = date.getFullYear();
   $: month = date.getMonth();
   $: day = date.getDate();          // getDate() returns day of month, getDay() returns day of week
-  $: hour = date.getHours();
-  $: minute = date.getMinutes();
-  $: display = `${value.toLocaleDateString('en-US')} @ ${value.toLocaleTimeString('en-US')}`;
+
+  // reactive properties
+  // synced to the selected date / time
+  $: hour = value.getHours();
+  $: minute = value.getMinutes();
+  $: display = `${value.toLocaleDateString(locale)} @ ${value.toLocaleTimeString(locale)}`;
 
   let visible = false;  // True to show datepicker, false to hide
   let tod = 'AM';       // Time of Day (AM / PM)
@@ -54,9 +59,6 @@
   }
 
   async function getDateValue(d) {
-    /*let selectedDate = new Date(year, month, date);*/
-    /*datepickerValue = `${selectedDate.toLocaleDateString('en-US')} @ ${selectedDate.toLocaleTimeString('en-US')}`;*/
-    //visible = false;
     value = new Date(year, month, d, hour, minute);
     await tick();
   }
@@ -99,6 +101,44 @@
     await tick();
 
     getNoOfDays();
+  }
+
+  function offsetHour(diff: number) {
+    const h = hour + diff;
+    if ((hour == 11 && h == 12) || (h < 0)) {
+      tod = 'PM';
+    } else if ((hour == 12 && h == 11) || (h > 23)) {
+      tod = 'AM';
+    }
+
+    if (h < 0) {
+      value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), 23, minute);
+    } else if (h > 23) {
+      value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), 0, minute);
+    } else {
+      value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), h, minute);
+    }
+  }
+
+  function offsetMinute(diff: number) {
+    const m = minute + diff;
+    if (m < 0) {
+      value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), hour, 59);
+    } else if (m > 59) {
+      value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), hour, 0);
+    } else {
+      value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), hour, m);
+    }
+  }
+
+  function flipTod(event) {
+    if (event.detail.value === 'AM') {
+      value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), hour - 12, minute);
+    } else if (event.detail.value === 'PM') {
+      value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), hour + 12, minute);
+    } else {
+      console.log('unknown time of day');
+    }
   }
 
   function formatMinute(value) {
@@ -158,11 +198,11 @@
         <div 
           use:clickAway
           class="w-full bg-white mt-12 rounded-lg shadow border border-primary-700 p-4 absolute top-0 left-0 z-10"
-          on:click_away="{_e => visible = false}">
+          on:click_away="{() => visible = false}">
 
           <div class="flex justify-between items-center mb-2">
             <div>
-              <span class="text-lg font-bold text-gray-800">{MONTH_NAMES[month]}</span>
+              <span class="text-lg font-bold text-gray-800">{months[month]}</span>
               <span class="ml-1 text-lg text-gray-600 font-normal">{year}</span>
             </div>
             <div>
@@ -204,7 +244,7 @@
             {#each [...Array(days).keys()] as d}
               <div class="px-1 mb-1">
                 <div
-                  on:click={_e => getDateValue(d+1)}
+                  on:click={() => getDateValue(d+1)}
                   class="{`cursor-pointer text-center text-sm leading-none rounded-full leading-loose transition ease-in-out duration-100 ${isToday(d + 1) ? 'today' : 'not-today'}`}"
                   class:selected="{areEqual(value, new Date(year, month, d+1))}"
                   >
@@ -225,14 +265,22 @@
               <div class="flex flex-row w-full rounded-lg relative items-center h-full">
                 <button
                   class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-l cursor-pointed outline-none"
-                  on:click="{_e => { hour = (hour == 1) ? 12 : hour - 1 }}"
+                  on:click="{() => { offsetHour(-1) }}"
                 >
                   <span class="m-auto text-2xl font-thin">-</span>
                 </button>
-                <span class="text-sm leading-none px-4">{hour}</span>
+                <span class="text-sm leading-none px-4">
+                  {#if hour > 12}
+                    {hour - 12}
+                  {:else if hour == 0}
+                    12
+                  {:else}
+                    {hour}
+                  {/if}
+                </span>
                 <button
                   class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-r cursor-pointed outline-none"
-                  on:click="{_e => { hour = (hour == 12) ? 1 : hour + 1 }}"
+                  on:click="{() => { offsetHour(1) }}"
                 >
                   <span class="m-auto text-2xl font-thin">+</span>
                 </button>
@@ -245,7 +293,7 @@
               <div class="flex flex-row w-full rounded-lg relative items-center h-full">
                 <button
                   class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-l cursor-pointed outline-none"
-                  on:click="{_e => { minute = (minute == 0) ? 59 : minute - 1 }}"
+                  on:click="{() => { offsetMinute(-1) }}"
                 >
                   <span class="m-auto text-2xl font-thin">-</span>
                 </button>
@@ -258,28 +306,28 @@
                 </span>
                 <button
                   class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-r cursor-pointed outline-none"
-                  on:click="{_e => { minute = (minute == 59) ? 0 : minute + 1 }}"
+                  on:click="{() => { offsetMinute(1) }}"
                 >
                   <span class="m-auto text-2xl font-thin">+</span>
                 </button>
               </div>
             </div>
             <div class="col-span-2 text-center text-sm leading-none">
-              <TwoItemToggle left="AM" right="PM" bind:value={tod} />
+              <TwoItemToggle left="AM" right="PM" bind:value={tod} on:click={flipTod} />
             </div>
 
             <!-- separator line between time and actions-->
             <hr class="col-span-7 mt-3 mb-3" />
 
             <div class="col-span-3 text-center text-sm leading-none">
-              <Button text="Now" on:click="{_e => value = new Date() }" />
+              <Button text="Now" on:click="{() => value = new Date() }" full />
             </div>
 
             <div class="col-span-1 text-center text-sm leading-none">
             </div>
 
             <div class="col-span-3 text-center text-sm leading-none">
-              <Button text="Close" on:click="{_e => visible = false}" />
+              <Button text="Close" on:click="{() => visible = false}" full />
             </div>
           </div>
         </div>
