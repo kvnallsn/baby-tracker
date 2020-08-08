@@ -4,6 +4,9 @@
   import Spinner from "svelte-spinner";
   import SvelteInfiniteScroll from "svelte-infinite-scroll";
 
+  // action imports
+  /*import { portal } from "~/actions/portal.js";*/
+
   // component imports
   import Button from "~/components/Button.svelte";
   import Card from "~/components/Card.svelte";
@@ -90,7 +93,7 @@
     <Latest />
   </div>
   <div class="flex justify-between items-center">
-    <span class="text-3xl p-2">Events</span>
+    <span class="text-3xl p-2">History</span>
     <div>
       <Button text="Refresh" on:click={refresh} />
       <Button text="New Event" color="primary" on:click="{() => drawerVisible = true}" />
@@ -98,11 +101,9 @@
   </div>
   <EventsList />
 </div>
-<div>
-  <FormDiaperEvent
-    open={drawerVisible}
-    on:close="{() => drawerVisible = false}" />
-</div>
+<FormDiaperEvent
+  open={drawerVisible}
+  on:close="{() => drawerVisible = false}" />
 
 <!--
   attribution
