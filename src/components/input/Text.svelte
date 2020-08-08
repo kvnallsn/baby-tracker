@@ -2,7 +2,8 @@
   // imports
 
   // props
-  export let id: string;
+  export let id: string = undefined;
+  export let name: string = undefined;
   export let label: string;
   export let placeholder: string;
   export let value: string;
@@ -18,6 +19,7 @@
   </label>
   <input
     {id}
+    {name}
     {placeholder} 
     bind:value
     class="form-input block w-full pl-2 pr-2 sm:text-sm sm:leading-5" />

@@ -9,7 +9,8 @@
   }
 
   // props
-  export let label: string | undefined;
+  export let label: string | undefined = undefined;
+  export let name: string | undefined = undefined;
   export let options: RadioOption[];
 
   // mutable data
@@ -20,7 +21,7 @@
 
 </style>
 
-<div class="flex flex-col space-y-1">
+<div {name} class="flex flex-col space-y-1">
   {#if label}
     <span class="block text-sm leading-5 font-medium text-gray-700">
       {label}

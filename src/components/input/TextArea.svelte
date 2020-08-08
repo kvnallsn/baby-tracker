@@ -2,7 +2,8 @@
   // imports
 
   // props
-  export let id: string;
+  export let id: string = undefined;
+  export let name: string = undefined;
   export let label: string;
   export let placeholder: string;
   export let rows: number = 5;
@@ -19,6 +20,7 @@
   </label>
   <textarea
     {id}
+    {name}
     {rows}
     {placeholder}
     bind:value

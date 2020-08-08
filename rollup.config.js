@@ -1,4 +1,5 @@
 import svelte from "rollup-plugin-svelte";
+import alias from '@rollup/plugin-alias';
 import copy from 'rollup-plugin-copy'
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
@@ -6,8 +7,8 @@ import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
 import sveltePreprocess from "svelte-preprocess";
 import typescript from "@rollup/plugin-typescript";
-//import css from "rollup-plugin-css-only";
 import image from "@rollup/plugin-image";
+//import css from "rollup-plugin-css-only";
 const fs = require('fs');
 
 const production = !process.env.ROLLUP_WATCH;
@@ -54,6 +55,13 @@ export default [
         browser: true,
         dedupe: ["svelte"],
       }),
+
+      alias({
+        entries: [
+          { find: '~', replacement: `${__dirname}/src` }
+        ]
+      }),
+
       commonjs(),
       typescript({ sourceMap: !production }),
 

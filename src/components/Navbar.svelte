@@ -1,13 +1,11 @@
 <script lang="ts">
   // imports
-  import { createEventDispatcher } from "svelte";
   import { fade } from "svelte/transition";
   import Button from "./Button.svelte";
 
   // props
 
   // local variables / definitions
-  const dispatch = createEventDispatcher();
   let menuMobile: boolean = false;
   let menuProfile: boolean = false;
 </script>
@@ -104,7 +102,6 @@
               .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
         </button>
-        <Button text="New Record" on:click={(_e) => dispatch('showCreateRecord')} />
 
         <!-- Profile dropdown -->
         <div class="ml-3 relative">

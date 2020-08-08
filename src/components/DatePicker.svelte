@@ -1,7 +1,7 @@
 <!-- component -->
 <script lang="ts">
   // npm imports
-  import { onMount, tick } from 'svelte';
+  import { onMount, tick, createEventDispatcher } from 'svelte';
 
   // component imports
   import Button from "./Button.svelte";
@@ -11,11 +11,13 @@
   import { clickAway } from '../actions/clickAway.ts';
 
   // props
+  export let name: string | undefined = undefined;
   export let value: Date = new Date();
   export let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   export let locale: string = 'en-US';
 
   // constants
+  const dispatch = createEventDispatcher();
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   // mutable data
@@ -61,6 +63,7 @@
   async function getDateValue(d) {
     value = new Date(year, month, d, hour, minute);
     await tick();
+    dispatch('change', { date: value });
   }
 
   function getNoOfDays() {
@@ -118,6 +121,8 @@
     } else {
       value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), h, minute);
     }
+
+    dispatch('change', { date: value });
   }
 
   function offsetMinute(diff: number) {
@@ -129,6 +134,8 @@
     } else {
       value = new Date(value.getFullYear(), value.getMonth(), value.getDate(), hour, m);
     }
+
+    dispatch('change', { date: value });
   }
 
   function flipTod(event) {
@@ -139,6 +146,8 @@
     } else {
       console.log('unknown time of day');
     }
+
+    dispatch('change', { date: value });
   }
 
   function formatMinute(value) {
@@ -174,7 +183,7 @@
   }
 </style>
 
-<div class="w-full">
+<div {name} class="w-full">
   <label for="datepicker" class="block text-sm leading-5 font-medium text-gray-700">
     Select Date
   </label>
@@ -264,6 +273,7 @@
             <div class="col-span-2 text-center text-sm leading-none">
               <div class="flex flex-row w-full rounded-lg relative items-center h-full">
                 <button
+                  type="button"
                   class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-l cursor-pointed outline-none"
                   on:click="{() => { offsetHour(-1) }}"
                 >
@@ -279,6 +289,7 @@
                   {/if}
                 </span>
                 <button
+                  type="button"
                   class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-r cursor-pointed outline-none"
                   on:click="{() => { offsetHour(1) }}"
                 >
@@ -292,6 +303,7 @@
             <div class="col-span-2 text-center text-sm leading-none">
               <div class="flex flex-row w-full rounded-lg relative items-center h-full">
                 <button
+                  type="button"
                   class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-l cursor-pointed outline-none"
                   on:click="{() => { offsetMinute(-1) }}"
                 >
@@ -305,6 +317,7 @@
                   {/if}
                 </span>
                 <button
+                  type="button"
                   class="w-12 text-gray-600 hover:text-gray-700 hover:bg-primary-400 rounded-r cursor-pointed outline-none"
                   on:click="{() => { offsetMinute(1) }}"
                 >

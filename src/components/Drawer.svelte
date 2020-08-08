@@ -8,6 +8,7 @@
   export let open: boolean;
   export let title: string;
   export let subtitle: string;
+  export let action: string = "button";     // what action the success button should perform ("button" for generic, "submit" for form)
 
   // Component local variables / definitions
   const dispatch = createEventDispatcher();
@@ -87,7 +88,7 @@
               class="flex justify-end items-center min-h-16 border-t
               border-gray-300 shadow-sm space-x-4 px-4 sm:px-6">
               <Button text="Cancel" on:click={cancel} />
-              <Button text="Create" color="blue" on:click={success} />
+              <Button type={action} text="Create" color="blue" on:click={success} />
             </footer>
           </div>
         </div>

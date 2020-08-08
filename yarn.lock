@@ -69,6 +69,13 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.11.tgz#aeb16f50649a91af79dbe36574b66d0f9e4d9f71"
   integrity sha512-3NsZsJIA/22P3QUyrEDNA2D133H4j224twJrdipXN38dpnIOzAbUDtOwkcJ5pXmn75w7LSQDjA4tO9dm1XlqlA==
 
+"@rollup/plugin-alias@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-alias/-/plugin-alias-3.1.1.tgz#bb96cf37fefeb0a953a6566c284855c7d1cd290c"
+  integrity sha512-hNcQY4bpBUIvxekd26DBPgF7BT4mKVNDF5tBG4Zi+3IgwLxGYRY0itHs9D0oLVwXM5pvJDWJlBQro+au8WaUWw==
+  dependencies:
+    slash "^3.0.0"
+
 "@rollup/plugin-commonjs@^12.0.0":
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-12.0.0.tgz#e2f308ae6057499e0f413f878fff7c3a0fdc02a1"
@@ -1189,7 +1196,7 @@ pretty-hrtime@^1.0.3:
   resolved "https://registry.yarnpkg.com/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
   integrity sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
 
-property-expr@^2.0.2:
+property-expr@2.0.2, property-expr@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/property-expr/-/property-expr-2.0.2.tgz#fff2a43919135553a3bc2fdd94bdb841965b2330"
   integrity sha512-bc/5ggaYZxNkFKj374aLbEDqVADdYaLcFo8XBkishUWbaAdjlphaBFns9TvRA2pUseVL/wMFmui9X3IdNDU37g==
@@ -1283,6 +1290,11 @@ rollup-plugin-livereload@^1.0.0:
   integrity sha512-abyqXaB21+nFHo+vJULBqfzNx6zXABC19UyvqgDfdoxR/8pFAd041GO+GIUe8ZYC2DbuMUmioh1Lvbk14YLZgw==
   dependencies:
     livereload "^0.9.1"
+
+rollup-plugin-root-import@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-root-import/-/rollup-plugin-root-import-1.0.0.tgz#4e0531c0083057afb4493d20c3007fd247268fb7"
+  integrity sha512-1GN5QxrFjXe5ki53gLH8J3ily2f1qsjlz2EliwijJMfPDm2acsWJ2blEUMQADokOmxZCx9uiiI/5J7mbtupPMw==
 
 rollup-plugin-svelte@^5.0.3:
   version "5.2.3"
@@ -1444,6 +1456,13 @@ svelte-check@^0.1.0:
     vscode-languageserver-protocol "3.15.3"
     vscode-languageserver-types "3.15.1"
     vscode-uri "2.1.1"
+
+svelte-forms-lib@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/svelte-forms-lib/-/svelte-forms-lib-1.2.0.tgz#95382b1574a159ef90b9a89bfb409aba606e2da7"
+  integrity sha512-qZ9I4lvXe8uBOpqOOAFfJOsxl+MQigof4T37/4ARUwi29lFImV7M4JQLaTp0ULTWZ4heSsPKa3EovFrCFQPU4Q==
+  dependencies:
+    property-expr "2.0.2"
 
 svelte-infinite-scroll@^1.4.1:
   version "1.4.1"

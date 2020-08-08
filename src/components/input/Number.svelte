@@ -1,32 +1,17 @@
 <script lang="ts">
   // imports
   import { onMount } from "svelte";
-  import * as yup from "yup";
 
-  // components
-  import Checkmark from "../overlays/Checkmark.svelte";
+  // svg imports
+  import Checkmark from "~/components/overlays/Checkmark.svelte";
 
   // props
-  export let id: string;
+  export let id: string = undefined;
+  export let name: string = undefined;
   export let label: string;
   export let placeholder: string;
   export let value: number;
-  // an optional schema to validate against
-  export let schema: yup.Schema = undefined;
-
-  let validated: bool = true;
-  let errors = [];
-
-  function validate(e) {
-    if (schema) {
-      schema.validate(e.target.valueAsNumber)
-        .then(() => validated = true)
-        .catch(e => {
-          validated = false;
-          errors = e.errors;
-        });
-    }
-  }
+  export let valid: boolean = true;
 </script>
 
 <style>
@@ -46,20 +31,19 @@
   <div class="relative">
     <input
       {id}
+      {name}
       type="number"
       bind:value
-      on:change={validate}
+      on:change
       class="form-input block w-full pl-2 pr-2 sm:text-sm sm:leading-5"
       {placeholder} />
-      {#if validated}
-        <Checkmark position="right" />
-      {/if}
+
+    {#if valid}
+      <Checkmark position="right" />
+    {/if}
   </div>
-  {#if !validated}
-    <ul class="block p-2 list-none">
-      {#each errors as error}
-        <li class="text-sm leading-5 font-medium text-red-700">{error}</li>
-      {/each}
-    </ul>
-  {/if}
+  <div class="leading-5 text-xs text-red-500 ml-2">
+    <slot name="errors">
+    </slot>
+  </div>
 </div>

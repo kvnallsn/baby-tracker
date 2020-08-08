@@ -49,12 +49,16 @@ interface Latest {
 }
 
 interface State {
+  babyId?: string;
+  locale: string;
   events: Events;
   latest: Latest;
 }
 
 function createState() {
   const { subscribe, set, update } = writable({
+   babyId: "dceae182-1561-4486-9f6a-fe7fa8dae491",
+   locale: "en-US",
    events: {
      refreshing: false,
      error: undefined,
