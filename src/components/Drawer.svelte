@@ -87,8 +87,10 @@
             <footer
               class="flex justify-end items-center min-h-16 border-t
               border-gray-300 shadow-sm space-x-4 px-4 sm:px-6">
-              <Button text="Cancel" on:click={cancel} />
-              <Button type={action} text="Create" color="blue" on:click={success} />
+              <slot name="footer">
+                <Button text="Cancel" on:click={cancel} />
+                <Button type={action} text="Create" color="blue" on:click={success} />
+              </slot>
             </footer>
           </div>
         </div>

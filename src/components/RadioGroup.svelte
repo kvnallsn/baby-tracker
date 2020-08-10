@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { text } from "svelte/internal";
+  import { createEventDispatcher } from "svelte";
   import Checkmark from "./overlays/Checkmark.svelte";
 
   // types
@@ -15,6 +15,14 @@
 
   // mutable data
   export let value = undefined;
+
+  // const variables
+  const dispatch = createEventDispatcher();
+
+  function clicked(v: string) {
+    value = v;
+    dispatch('change', v);
+  }
 </script>
 
 <style>
@@ -31,7 +39,7 @@
     <div
       class="relative group flex w-full p-2 border rounded border-gray-200
       hover:bg-primary-700 hover:text-white cursor-pointer"
-      on:click={(_e) => value = option.value}>
+      on:click={() => clicked(option.value)}>
       <span
         class="flex-1 font-normal truncate text-base sm:text-sm cursor-pointer">
         {option.text}

@@ -6,8 +6,10 @@
   import Checkmark from "~/components/overlays/Checkmark.svelte";
 
   // props
-  export let id: string = undefined;
-  export let name: string = undefined;
+  export let id: string | undefined  = undefined;
+  export let name: string | undefined  = undefined;
+  export let min: number | undefined = undefined;
+  export let max: number | undefined = undefined;
   export let label: string;
   export let placeholder: string;
   export let value: number;
@@ -30,9 +32,11 @@
   </label>
   <div class="relative">
     <input
+      type="number"
       {id}
       {name}
-      type="number"
+      {min}
+      {max}
       bind:value
       on:change
       class="form-input block w-full pl-2 pr-2 sm:text-sm sm:leading-5"

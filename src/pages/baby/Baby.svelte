@@ -10,6 +10,8 @@
   // component imports
   import Button from "~/components/Button.svelte";
   import Card from "~/components/Card.svelte";
+  import Dropdown from "~/components/Dropdown.svelte";
+  import DropdownButton from "~/components/DropdownButton.svelte";
 
   // page-specific imports
   import FormDiaperEvent from "./CreateDiaperEvent.svelte";
@@ -43,7 +45,6 @@
 
   const BABY_ID ="dceae182-1561-4486-9f6a-fe7fa8dae491";
   async function refresh() {
-    console.log("refresh");
     await state.refreshEvents(BABY_ID);
   }
 
@@ -96,7 +97,11 @@
     <span class="text-3xl p-2">History</span>
     <div>
       <Button text="Refresh" on:click={refresh} />
-      <Button text="New Event" color="primary" on:click="{() => drawerVisible = true}" />
+      <Dropdown text="New Event">
+        <DropdownButton text="Diaper Change" on:click="{() => drawerVisible = true}" />
+        <DropdownButton text="Nursing" on:click="{() => drawerVisible = true}" />
+        <DropdownButton text="Sleep" on:click="{() => drawerVisible = true}" />
+      </Dropdown>
     </div>
   </div>
   <EventsList />

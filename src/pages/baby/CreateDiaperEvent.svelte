@@ -8,7 +8,7 @@
   import { state, date } from "~/stores.ts";
 
   // Models
-  import * as Diaper from "~/api/diaper.ts";
+  import { Condition, Leakage } from "~/api/event.ts";
 
   // Forms
 
@@ -27,15 +27,15 @@
 
   // data
   let conditions = [
-    { value: Diaper.Condition.Dry, text: "Dry" },
-    { value: Diaper.Condition.Wet, text: "Wet" },
-    { value: Diaper.Condition.Bowel, text: "BM" },
+    { value: Condition.Dry, text: "Dry" },
+    { value: Condition.Wet, text: "Wet" },
+    { value: Condition.Bowel, text: "BM" },
   ];
 
   let leakages = [
-    { value: Diaper.Leakage.None, text: "No Leakage" },
-    { value: Diaper.Leakage.Some, text: "Leakage" },
-    { value: Diaper.Leakage.Blowout, text: "Blowout" },
+    { value: Leakage.None, text: "No Leakage" },
+    { value: Leakage.Some, text: "Leakage" },
+    { value: Leakage.Blowout, text: "Blowout" },
   ];
 
   // reactive data
@@ -55,16 +55,14 @@
     handleSubmit
   } = createForm({
     initialValues: {
-      at: new Date(),
-      condition: Diaper.Condition.Dry,
-      leakage: Diaper.Leakage.None,
+      condition: Condition.Dry,
+      leakage: Leakage.None,
       brand: "",
       size: 0,
       notes: "",
     },
 
     validationSchema: yup.object().shape({
-      at: yup.date().required(),
       condition: yup.mixed().oneOf(['dry', 'wet', 'bowel']).required(),
       leakage: yup.mixed().oneOf(['none', 'some', 'blowout']).required(),
       brand: yup.string(),
@@ -75,7 +73,7 @@
     onSubmit: values => {
       const payload = {
         baby_id: $state.babyId,
-        at: values.at,
+        at: $date,
         notes: values.notes,
         event: {
           type: "diaper",
@@ -114,8 +112,6 @@
     <div class="h-full flex flex-col space-y-6 bg-white overflow-y-scroll">
       <div>
         <DatePicker
-          name="at"
-          on:change="{e => $form.at = e.detail.date}"
           bind:value={$date} />
       </div>
 
@@ -141,6 +137,8 @@
           name="size"
           label="Size"
           placeholder="Diaper size (0, 1, 2, etc)"
+          min=0
+          max=7
           valid={$errors.size.length === 0}
           on:change={handleChange}
           bind:value={$form.size}>
