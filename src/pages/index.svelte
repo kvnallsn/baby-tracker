@@ -43,19 +43,9 @@
   let createSleepOpen: boolean = false;
   let page = 0;
 
-  const BABY_ID ="dceae182-1561-4486-9f6a-fe7fa8dae491";
   async function refresh() {
-    await state.refreshEvents(BABY_ID);
+    await state.refreshEvents($state.babyId);
   }
-
-  async function loadNextPage() {
-    page += 1;
-    await state.loadMoreEvents(BABY_ID, page);
-  }
-
-  onMount(async () => {
-    await state.refreshEvents(BABY_ID);
-  });
 </script>
 
 <style>
