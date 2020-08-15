@@ -2,8 +2,9 @@
   "name": "svelte-app",
   "version": "1.0.0",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "routify -b && rollup -c",
+    "dev": "routify -c frontend",
+    "frontend": "rollup -c -w",
     "start": "sirv public -k -C certs/diaprs.allisn.net.crt -K certs/diaprs.allisn.net.key --host",
     "validate": "svelte-check"
   },

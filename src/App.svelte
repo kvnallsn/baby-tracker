@@ -1,11 +1,8 @@
 <script lang="ts">
   import GlobalStyle from "~/GlobalStyle.svelte";
 
-  // component imports
-  import Navbar from "~/components/Navbar.svelte";
-
-  // pages
-  import Baby from "~/pages/baby/Baby.svelte";
+  import { Router } from "@sveltech/routify";
+  import { routes } from "@sveltech/routify/tmp/routes";
 </script>
 
 <style>
@@ -16,10 +13,7 @@
 </style>
 
 <GlobalStyle />
-<div class="layout h-screen w-screen">
-  <Navbar />
-  <Baby />
-</div>
+<Router {routes} />
 
 <!--
   attribution

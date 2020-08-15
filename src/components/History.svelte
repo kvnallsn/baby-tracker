@@ -4,9 +4,6 @@
   import Spinner from "svelte-spinner";
   import SvelteInfiniteScroll from "svelte-infinite-scroll";
 
-  // page-specific imports
-  import Latest from "./Latest.svelte";
-
   // component imports
 
   // import api

@@ -14,9 +14,9 @@
   import DropdownButton from "~/components/DropdownButton.svelte";
 
   // page-specific imports
-  import FormDiaperEvent from "./CreateDiaperEvent.svelte";
-  import EventsList from "./EventsList.svelte";
-  import Latest from "./Latest.svelte";
+  import FormDiaperEvent from "~/modals/drawers/CreateDiaperEvent.svelte";
+  import History from "~/components/History.svelte";
+  import LatestEvents from "~/components/LatestEvents.svelte";
 
   // import api
   import * as api from "~/api.ts";
@@ -91,7 +91,7 @@
 
 <div class="max-w-6xl w-full mx-auto">
   <div class="py-4">
-    <Latest />
+    <LatestEvents />
   </div>
   <div class="flex justify-between items-center">
     <span class="text-3xl p-2">History</span>
@@ -104,7 +104,7 @@
       </Dropdown>
     </div>
   </div>
-  <EventsList />
+  <History />
 </div>
 <FormDiaperEvent
   open={drawerVisible}
