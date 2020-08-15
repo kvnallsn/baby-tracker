@@ -33,6 +33,17 @@ async function http_post<T>(request: RequestInfo, data: any): Promise<T> {
   return http_parse(await response.text());
 }
  
+async function http_put<T>(request: RequestInfo, data: any): Promise<T> {
+  const response = await fetch(request, {
+    method: 'PUT',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  return http_parse(await response.text());
+}
 function uri(endpoint: string, args?: any): URL {
   const url = new URL(`${URI}${endpoint}`);
   if (args) {
@@ -61,13 +72,23 @@ async function getEvents(params: GetEventsArgs): Promise<Event[]> {
 }
 
 /**
- * Creates a new sleep event, POSTing to the correct endpoint
+ * Creates a new sevent, POSTing to the correct endpoint
  */
 async function createEvent(payload: any): Promise<Event> {
-  const url = uri('/events/new');
-  const json = await http_post<{ event: Event}>(url.toString(), payload);
+  const url = uri('/event/new');
+  const json = await http_post<{ event: Event }>(url.toString(), payload);
 
   return Event.fromJSON(json.event);
+}
+
+/**
+ * Updates an already existing event
+ */
+async function updateEvent(payload: any): Promise<{}> {
+  const url = uri('/event/update');
+  const json = await http_put<{}>(url.toString(), payload);
+
+  return {};
 }
 
 interface LatestEvents {
@@ -98,4 +119,5 @@ export {
   getEvents,
   getLatestEvents,
   createEvent,
+  updateEvent,
 }

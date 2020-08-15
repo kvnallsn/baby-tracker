@@ -205,6 +205,10 @@ function createState() {
         });
       }
     },
+
+    updateEvent: async (payload: any) => {
+      await api.updateEvent(payload);
+    }
   }
 }
 

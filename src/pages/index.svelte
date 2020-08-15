@@ -17,6 +17,7 @@
   import FormDiaperEvent from "~/modals/drawers/CreateDiaperEvent.svelte";
   import FormNursingEvent from "~/modals/drawers/CreateNursingEvent.svelte";
   import FormSleepEvent from "~/modals/drawers/CreateSleepEvent.svelte";
+  import FormWakeUpEvent from "~/modals/drawers/CreateWakeUpEvent.svelte";
 
   import History from "~/components/History.svelte";
   import LatestEvents from "~/components/LatestEvents.svelte";
@@ -41,6 +42,7 @@
   let createDiaperOpen: boolean = false;
   let createNursingOpen: boolean = false;
   let createSleepOpen: boolean = false;
+  let createWakeUpOpen: boolean = false;
   let page = 0;
 
   async function refresh() {
@@ -91,6 +93,7 @@
         <DropdownButton text="Diaper Change" on:click="{() => createDiaperOpen = true}" />
         <DropdownButton text="Nursing" on:click="{() => createNursingOpen = true}" />
         <DropdownButton text="Sleep" on:click="{() => createSleepOpen = true}" />
+        <DropdownButton text="Woke Up" on:click="{() => createWakeUpOpen = true}" />
       </Dropdown>
     </div>
   </div>
@@ -107,6 +110,10 @@
 <FormSleepEvent
   open={createSleepOpen}
   on:close="{() => createSleepOpen = false}" />
+
+<FormWakeUpEvent
+  open={createWakeUpOpen}
+  on:close="{() => createWakeUpOpen = false}" />
 
 <!--
   attribution
