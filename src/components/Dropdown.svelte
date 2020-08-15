@@ -43,7 +43,7 @@
   {#if visible}
     <div
       class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg"
-      transition:fade
+      transition:fade="{{ duration: 100 }}"
     >
       <div class="rounded-md bg-white shadow-xs">
         <div
