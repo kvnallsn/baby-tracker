@@ -43,6 +43,7 @@ interface Events {
 
 interface Latest {
   refreshing: boolean;
+  error?: string;
   diaper?: api.Event;
   nursing?: api.Event;
   sleep?: api.Event;
@@ -68,6 +69,7 @@ function createState() {
    },
    latest: {
     refreshing: false,
+    error: undefined,
     diaper: undefined,
     nursing: undefined,
     sleep: undefined
@@ -189,13 +191,18 @@ function createState() {
 
         update(s => {
           s.latest.refreshing = false;
+          s.latest.error = undefined;
           s.latest.diaper = latest.diaper;
           s.latest.nursing = latest.nursing;
           s.latest.sleep = latest.sleep;
           return s;
         });
       } catch (e) {
-        // TODO
+        update(s => {
+          s.latest.refreshing = false;
+          s.latest.error = "Failed to latest events";
+          return s;
+        });
       }
     },
   }

@@ -36,6 +36,13 @@
       gap="50"
       />
   </div>
+{:else if $state.latest.error !== undefined}
+  <div class="grid w-full bg-gray-50 shadow-inner" style="place-items: center; height: 278px">
+    <div class="text-center">
+      <div class="text-3xl text-red-600 font-bold">Error Loading Latest Events</div>
+      <div class="text-xl font-normal mt-4">Please try again in a couple of minutes</div>
+    </div>
+  </div>
 {:else}
   <div class="w-full grid grid-cols-1 row-gap-4 md:grid-cols-3 md:col-gap-16 md:row-gap-0">
     <Card src={diaper} alt="diaper" title="Diaper Change">
