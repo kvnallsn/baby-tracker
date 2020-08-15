@@ -16,6 +16,7 @@
   // page-specific imports
   import FormDiaperEvent from "~/modals/drawers/CreateDiaperEvent.svelte";
   import FormNursingEvent from "~/modals/drawers/CreateNursingEvent.svelte";
+  import FormSleepEvent from "~/modals/drawers/CreateSleepEvent.svelte";
 
   import History from "~/components/History.svelte";
   import LatestEvents from "~/components/LatestEvents.svelte";
@@ -39,6 +40,7 @@
   let alertVisible: boolean = false;
   let createDiaperOpen: boolean = false;
   let createNursingOpen: boolean = false;
+  let createSleepOpen: boolean = false;
   let page = 0;
 
   const BABY_ID ="dceae182-1561-4486-9f6a-fe7fa8dae491";
@@ -98,7 +100,7 @@
       <Dropdown text="New Event">
         <DropdownButton text="Diaper Change" on:click="{() => createDiaperOpen = true}" />
         <DropdownButton text="Nursing" on:click="{() => createNursingOpen = true}" />
-        <DropdownButton text="Sleep" on:click="{() => createDiaperOpen = true}" />
+        <DropdownButton text="Sleep" on:click="{() => createSleepOpen = true}" />
       </Dropdown>
     </div>
   </div>
@@ -111,6 +113,10 @@
 <FormNursingEvent
   open={createNursingOpen}
   on:close="{() => createNursingOpen = false}" />
+
+<FormSleepEvent
+  open={createSleepOpen}
+  on:close="{() => createSleepOpen = false}" />
 
 <!--
   attribution
