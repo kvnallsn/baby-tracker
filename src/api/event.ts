@@ -215,10 +215,10 @@ export class NursingDetail {
   get_source(): string {
     switch (this.source) {
       case Source.Bottle:
-        return "Bottle";
+        return "Bottle Fed";
 
       case Source.Breast:
-        return "Breast";
+        return "Breast Fed";
 
       default:
         return "";

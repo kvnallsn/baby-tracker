@@ -14,9 +14,9 @@
   import { state } from "~/stores.ts";
 
   // svg imports
-  import diaper from "~/svg/010-diaper.svg";
-  import bottle from "~/svg/004-feeding bottle.svg";
-  import night from "~/svg/026-night.svg";
+  /*import diaper from "~/svg/010-diaper.svg";*/
+  /*import bottle from "~/svg/004-feeding bottle.svg";*/
+  /*import night from "~/svg/026-night.svg";*/
 
   onMount(async () => {
     await state.refreshLatest($state.babyId);
@@ -45,7 +45,7 @@
   </div>
 {:else}
   <div class="w-full grid grid-cols-1 row-gap-4 md:grid-cols-3 md:col-gap-16 md:row-gap-0">
-    <Card src={diaper} alt="diaper" title="Diaper Change">
+    <Card title="Diaper Change">
       {#if $state.latest.diaper === undefined}
         No diaper changes found.
       {:else}
@@ -62,7 +62,7 @@
         <FlatButton text="New" />
       </div>
     </Card>
-    <Card src={bottle} alt="nursing" title="Nursing">
+    <Card title="Nursing">
       {#if $state.latest.nursing === undefined}
         No nursings found.
       {:else}
@@ -78,7 +78,7 @@
       <div class="" slot="footer">
       </div>
     </Card>
-    <Card src={night} alt="sleep" title="Sleep">
+    <Card title="Sleep">
       {#if $state.latest.nursing === undefined}
         No sleep events found
       {:else}

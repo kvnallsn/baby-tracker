@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import Spinner from "svelte-spinner";
   import SvelteInfiniteScroll from "svelte-infinite-scroll";
+  import { Duration } from "luxon";
 
   // component imports
 
@@ -127,9 +128,16 @@
                   <div class="cell-subtitle">{event.event.detail.get_leakage()}</div>
                 {:else if event.event.type === EventType.Nursing}
                   <div class="cell-title">{event.event.detail.get_source()}</div>
-                  <div class="cell-subtitle">Source</div>
+                  <div class="cell-subtitle">{event.event.detail.get_detail()}</div>
                 {:else if event.event.type === EventType.Sleep}
-                  <div class="cell-title">Sleep</div>
+                  {#if event.event.detail.woke_up}
+                    <div class="cell-title">
+                      {event.event.detail.woke_up.toLocaleString($state.locale)}
+                    </div>
+                    <div class="cell-subtitle">
+                      Woke up
+                    </div>
+                  {/if}
                 {/if}
               </div>
               <div class="col-span-2 px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -141,9 +149,14 @@
                   {/if}
                   <div class="cell-subtitle">Size {event.event.detail.size}</div>
                 {:else if event.event.type === EventType.Nursing}
-                  <div class="cell-title">{event.event.detail.get_detail()}</div>
+                  <div class="cell-title" />
                 {:else if event.event.type === EventType.Sleep}
-                  <div class="cell-title">Sleep</div>
+                  {#if event.event.detail.woke_up}
+                    <div class="cell-title">
+                      {Duration.fromMillis(event.event.detail.woke_up.getTime() - event.at.getTime()).as('hours')}
+                    </div>
+                    <div class="cell-subtitle">Duration</div>
+                  {/if}
                 {/if}
               </div>
               <div class="hidden sm:block col-span-1 px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
