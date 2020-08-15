@@ -15,6 +15,8 @@
 
   // page-specific imports
   import FormDiaperEvent from "~/modals/drawers/CreateDiaperEvent.svelte";
+  import FormNursingEvent from "~/modals/drawers/CreateNursingEvent.svelte";
+
   import History from "~/components/History.svelte";
   import LatestEvents from "~/components/LatestEvents.svelte";
 
@@ -35,13 +37,9 @@
 
   // mutable data
   let alertVisible: boolean = false;
-  let drawerVisible: boolean = false;
+  let createDiaperOpen: boolean = false;
+  let createNursingOpen: boolean = false;
   let page = 0;
-
-  function showCreateRecord() {
-    date.set(new Date());
-    drawerVisible = true;
-  }
 
   const BABY_ID ="dceae182-1561-4486-9f6a-fe7fa8dae491";
   async function refresh() {
@@ -98,17 +96,21 @@
     <div>
       <Button text="Refresh" on:click={refresh} />
       <Dropdown text="New Event">
-        <DropdownButton text="Diaper Change" on:click="{() => drawerVisible = true}" />
-        <DropdownButton text="Nursing" on:click="{() => drawerVisible = true}" />
-        <DropdownButton text="Sleep" on:click="{() => drawerVisible = true}" />
+        <DropdownButton text="Diaper Change" on:click="{() => createDiaperOpen = true}" />
+        <DropdownButton text="Nursing" on:click="{() => createNursingOpen = true}" />
+        <DropdownButton text="Sleep" on:click="{() => createDiaperOpen = true}" />
       </Dropdown>
     </div>
   </div>
   <History />
 </div>
 <FormDiaperEvent
-  open={drawerVisible}
-  on:close="{() => drawerVisible = false}" />
+  open={createDiaperOpen}
+  on:close="{() => createDiaperOpen = false}" />
+
+<FormNursingEvent
+  open={createNursingOpen}
+  on:close="{() => createNursingOpen = false}" />
 
 <!--
   attribution

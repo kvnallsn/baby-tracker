@@ -46,7 +46,7 @@ export enum Source {
 }
 
 /** If breast, what side was used */
-export enum Side {
+export enum SourceDetail {
   /** Started on left side */
   Left = "left",
 
@@ -205,9 +205,9 @@ export class DiaperDetail {
 export class NursingDetail {
   source: Source;
 
-  detail: Side;
+  detail: SourceDetail;;
 
-  constructor(source: Source, detail: Side) {
+  constructor(source: Source, detail: SourceDetail) {
     this.source = source;
     this.detail = detail;
   }
@@ -227,19 +227,19 @@ export class NursingDetail {
 
   get_detail(): string {
     switch (this.detail) {
-      case Side.Left:
+      case SourceDetail.Left:
         return "Left Breast";
 
-      case Side.Right:
+      case SourceDetail.Right:
         return "Right Breast";
 
-      case Side.Both:
+      case SourceDetail.Both:
         return "Both Breasts";
 
-      case Side.Formula:
+      case SourceDetail.Formula:
         return "Formula";
 
-      case Side.Pumped:
+      case SourceDetail.Pumped:
         return "Pumped";
 
       default:
@@ -264,6 +264,6 @@ export default {
   Condition,
   Leakage,
   Source,
-  Side,
+  SourceDetail,
   Event,
 }
