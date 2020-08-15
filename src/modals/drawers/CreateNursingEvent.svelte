@@ -86,10 +86,6 @@
         .catch(e => console.error(e));
     }
   });
-
-  function createRecordCancelled() {
-    dispatch("close");
-  }
 </script>
 
 <style>
@@ -100,9 +96,9 @@
   <Drawer
     {open}
     action="submit"
-    on:close={(_e) => dispatch('close')}
-    on:cancel={createRecordCancelled}
-    title="New Diaper Change"
+    on:close
+    on:cancel={() => dispatch('close')}
+    title="New Nursing Event"
     subtitle="Please enter details below">
 
     <div class="h-full flex flex-col space-y-6 bg-white overflow-y-scroll">
