@@ -2,6 +2,7 @@ import svelte from "rollup-plugin-svelte";
 import alias from '@rollup/plugin-alias';
 import copy from 'rollup-plugin-copy'
 import resolve from "@rollup/plugin-node-resolve";
+import replace from '@rollup/plugin-replace';
 import commonjs from "@rollup/plugin-commonjs";
 import livereload from "rollup-plugin-livereload";
 import { terser } from "rollup-plugin-terser";
@@ -29,6 +30,10 @@ export default [
           { src: "src/index.html", dest: dest },
           { src: "assets/favicon.png", dest: dest },
         ]
+      }),
+
+      replace({
+        'process.env.NODE_ENV': JSON.stringify(production ? 'production' : 'development'),
       }),
 
       //css({ output: `${dest}/extra.css` }),

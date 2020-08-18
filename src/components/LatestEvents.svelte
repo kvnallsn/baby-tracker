@@ -1,103 +1,74 @@
 <script lang="ts">
   // npm imports
-  import { onMount } from "svelte";
   import Spinner from "svelte-spinner";
 
   // component imports
   import Card from "~/components/Card.svelte";
   import FlatButton from "~/components/FlatButton.svelte";
 
-  // api imports
-  import * as api from "~/api.ts";
-
   // state imports
   import { state } from "~/stores.ts";
 
-  // svg imports
-  /*import diaper from "~/svg/010-diaper.svg";*/
-  /*import bottle from "~/svg/004-feeding bottle.svg";*/
-  /*import night from "~/svg/026-night.svg";*/
-
-  onMount(async () => {
-    await state.refreshLatest($state.babyId);
-  });
+  /* An object containing references to the latest of each class of events */
+  export let data;
 </script>
 
 <style>
 </style>
 
-{#if $state.latest.refreshing}
-  <div class="grid w-full bg-gray-50 shadow-inner" style="place-items: center; height: 278px">
-    <Spinner
-      size="100"
-      speed="1000"
-      color="#C53030"
-      thickness="2"
-      gap="50"
-      />
-  </div>
-{:else if $state.latest.error !== undefined}
-  <div class="grid w-full bg-gray-50 shadow-inner" style="place-items: center; height: 278px">
-    <div class="text-center">
-      <div class="text-3xl text-red-600 font-bold">Error Loading Latest Events</div>
-      <div class="text-xl font-normal mt-4">Please try again in a couple of minutes</div>
+<div class="w-full grid grid-cols-1 row-gap-4 md:grid-cols-3 md:col-gap-16 md:row-gap-0">
+  <Card title="Diaper Change">
+    {#if data.diaper === undefined}
+      No diaper changes found.
+    {:else}
+      <div class="flex justify-between text-xs text-gray-400 italic">
+        <span>{data.diaper.at.toLocaleDateString($state.locale)}</span>
+        <span>{data.diaper.at.toLocaleTimeString($state.locale)}</span>
+      </div>
+      <hr class="py-2" />
+      <p class="text-gray-600 text-base">
+        {data.diaper.event.detail.get_condition()}, {data.diaper.event.detail.get_leakage()}
+      </p>
+    {/if}
+    <div class="flex justify-start" slot="footer">
+      <FlatButton text="New" />
     </div>
-  </div>
-{:else}
-  <div class="w-full grid grid-cols-1 row-gap-4 md:grid-cols-3 md:col-gap-16 md:row-gap-0">
-    <Card title="Diaper Change">
-      {#if $state.latest.diaper === undefined}
-        No diaper changes found.
-      {:else}
-        <div class="flex justify-between text-xs text-gray-400 italic">
-          <span>{$state.latest.diaper.at.toLocaleDateString($state.locale)}</span>
-          <span>{$state.latest.diaper.at.toLocaleTimeString($state.locale)}</span>
-        </div>
-        <hr class="py-2" />
-        <p class="text-gray-600 text-base">
-          {$state.latest.diaper.event.detail.get_condition()}, {$state.latest.diaper.event.detail.get_leakage()}
-        </p>
-      {/if}
-      <div class="flex justify-start" slot="footer">
-        <FlatButton text="New" />
+  </Card>
+  <Card title="Nursing">
+    {#if data.nursing === undefined}
+      No nursings found.
+    {:else}
+      <div class="flex justify-between text-xs text-gray-400 italic">
+        <span>{data.nursing.at.toLocaleDateString($state.locale)}</span>
+        <span>{data.nursing.at.toLocaleTimeString($state.locale)}</span>
       </div>
-    </Card>
-    <Card title="Nursing">
-      {#if $state.latest.nursing === undefined}
-        No nursings found.
-      {:else}
-        <div class="flex justify-between text-xs text-gray-400 italic">
-          <span>{$state.latest.nursing.at.toLocaleDateString($state.locale)}</span>
-          <span>{$state.latest.nursing.at.toLocaleTimeString($state.locale)}</span>
-        </div>
-        <hr class="py-2" />
-        <p class="text-gray-600 text-base">
-          {$state.latest.nursing.event.detail.get_source()}, {$state.latest.nursing.event.detail.get_detail()}
-        </p>
-      {/if}
-      <div class="" slot="footer">
+      <hr class="py-2" />
+      <p class="text-gray-600 text-base">
+        {data.nursing.event.detail.get_source()}, {data.nursing.event.detail.get_detail()}
+      </p>
+    {/if}
+    <div class="" slot="footer">
+    </div>
+  </Card>
+  <Card title="Sleep">
+    {#if data.sleep === undefined}
+      No sleep events found
+    {:else}
+      <div class="flex justify-between text-xs text-gray-400 italic">
+        <span>{data.sleep.at.toLocaleDateString($state.locale)}</span>
+        <span>{data.sleep.at.toLocaleTimeString($state.locale)}</span>
       </div>
-    </Card>
-    <Card title="Sleep">
-      {#if $state.latest.nursing === undefined}
-        No sleep events found
-      {:else}
-        <div class="flex justify-between text-xs text-gray-400 italic">
-          <span>{$state.latest.sleep.at.toLocaleDateString($state.locale)}</span>
-          <span>{$state.latest.sleep.at.toLocaleTimeString($state.locale)}</span>
-        </div>
-        <hr class="py-2" />
-        <p class="text-gray-600 text-base">
-          {#if $state.latest.sleep.event.detail.woke_up}
-            Woke up at {$state.latest.sleep.event.detail.woke_up.toLocaleString('en-US')} 
-          {:else}
-            Baby still snoozing
-          {/if}
-        </p>
-      {/if}
-      <div class="justify-start items-end" slot="footer">
-        <FlatButton text="WOKE UP" color="primary" />
-      </div>
-    </Card>
-  </div>
-{/if}
+      <hr class="py-2" />
+      <p class="text-gray-600 text-base">
+        {#if data.sleep.event.detail.woke_up}
+          Woke up at {data.sleep.event.detail.woke_up.toLocaleString('en-US')} 
+        {:else}
+          Baby still snoozing
+        {/if}
+      </p>
+    {/if}
+    <div class="justify-start items-end" slot="footer">
+      <FlatButton text="WOKE UP" color="primary" />
+    </div>
+  </Card>
+</div>

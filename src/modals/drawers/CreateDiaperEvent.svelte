@@ -5,9 +5,10 @@
   import * as yup from "yup";
 
   // state imports
-  import { state, date } from "~/stores.ts";
+  import { state } from "~/stores.ts";
 
   // Models
+  import * as api from "~/api.ts";
   import { Condition, Leakage } from "~/api/event.ts";
 
   // Forms
@@ -38,8 +39,6 @@
     { value: Leakage.Blowout, text: "Blowout" },
   ];
 
-  // reactive data
-
   // mutable data
   const {
     // observable state
@@ -55,6 +54,7 @@
     handleSubmit
   } = createForm({
     initialValues: {
+      at: new Date(),
       condition: Condition.Dry,
       leakage: Leakage.None,
       brand: "",
@@ -63,6 +63,7 @@
     },
 
     validationSchema: yup.object().shape({
+      at: yup.date().required(),
       condition: yup.mixed().oneOf(['dry', 'wet', 'bowel']).required(),
       leakage: yup.mixed().oneOf(['none', 'some', 'blowout']).required(),
       brand: yup.string(),
@@ -70,10 +71,10 @@
       notes: yup.string(),
     }),
 
-    onSubmit: values => {
+    onSubmit: async values => {
       const payload = {
         baby_id: $state.babyId,
-        at: $date,
+        at: values.at,
         notes: values.notes,
         event: {
           type: "diaper",
@@ -84,11 +85,22 @@
         }
       };
 
-      state.createEvent(payload)
-        .then(() => dispatch('close'))
-        .catch(e => console.error(e));
+      try {
+        const event = await api.createEvent(payload);
+        dispatch('success', event);
+        dispatch('close');
+      } catch (error) {
+        dispatch('failed', error);
+      }
+      //state.createEvent(payload)
+      //  .then(() => dispatch('close'))
+      //  .catch(e => console.error(e));
     }
   });
+
+  // reactive data
+  $: if (open) { $form.at = new Date() }
+
 
   function createRecordCancelled() {
     dispatch("close");
@@ -112,7 +124,7 @@
     <div class="h-full flex flex-col space-y-6 bg-white overflow-y-scroll">
       <div>
         <DatePicker
-          bind:value={$date} />
+          bind:value={$form.at} />
       </div>
 
       <RadioGroup

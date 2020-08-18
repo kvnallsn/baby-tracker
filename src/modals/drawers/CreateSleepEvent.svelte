@@ -5,23 +5,23 @@
   import * as yup from "yup";
 
   // state imports
-  import { state, date } from "~/stores.ts";
+  import { state } from "~/stores.ts";
+
+  // Models
+  import * as api from "~/api.ts";
+  import { Source, SourceDetail} from "~/api/event.ts";
 
   // Forms
 
   // component imports
   import DatePicker from "~/components/DatePicker.svelte";
   import Drawer from "~/components/Drawer.svelte";
-  /*import RadioGroup from "~/components/RadioGroup.svelte";*/
-  /*import Text from "~/components/input/Text.svelte";*/
   import TextArea from "~/components/input/TextArea.svelte";
 
   // props
   export let open: boolean = false;
 
   const dispatch = createEventDispatcher();
-
-  // reactive data
 
   // mutable data
   const {
@@ -38,28 +38,34 @@
     handleSubmit
   } = createForm({
     initialValues: {
+      at: new Date(),
       notes: "",
     },
 
     validationSchema: yup.object().shape({
+      at: yup.date().required(),
       notes: yup.string(),
     }),
 
     onSubmit: values => {
       const payload = {
         baby_id: $state.babyId,
-        at: $date,
+        at: values.at,
         notes: values.notes,
         event: {
           type: "sleep",
         }
       };
 
-      state.createEvent(payload)
+      api.createEvent(payload)
+        .then(event => dispatch('success', event))
         .then(() => dispatch('close'))
-        .catch(e => console.error(e));
+        .catch(e => dispatch('failed', e));
     }
   });
+
+  // reactive data
+  $: if (open) { $form.at = new Date() }
 </script>
 
 <style>
@@ -78,7 +84,7 @@
     <div class="h-full flex flex-col space-y-6 bg-white overflow-y-scroll">
       <div>
         <DatePicker
-          bind:value={$date} />
+          bind:value={$form.at} />
       </div>
 
       <TextArea

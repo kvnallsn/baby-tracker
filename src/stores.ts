@@ -33,7 +33,7 @@ function binarySearch(arr: api.Event[], event: api.Event): number {
   return m;
 }
 
-interface Events {
+interface History {
   refreshing: boolean;
   error?: string;
   loadingMore: boolean;
@@ -52,7 +52,7 @@ interface Latest {
 interface State {
   babyId?: string;
   locale: string;
-  events: Events;
+  history: History;
   latest: Latest;
 }
 
@@ -60,7 +60,7 @@ function createState() {
   const { subscribe, set, update } = writable({
    babyId: "dceae182-1561-4486-9f6a-fe7fa8dae491",
    locale: "en-US",
-   events: {
+   history: {
      refreshing: false,
      error: undefined,
      loadingMore: false,
@@ -85,7 +85,7 @@ function createState() {
 
     refreshEvents: async (baby: string) => {
       update(s => {
-        s.events.refreshing = true;
+        s.history.refreshing = true;
         return s;
       });
 
@@ -97,17 +97,17 @@ function createState() {
         });
 
         update(s => {
-          s.events.refreshing = false;
-          s.events.error = undefined;
-          s.events.hasMore = events.length == 10;
-          s.events.data = events;
+          s.history.refreshing = false;
+          s.history.error = undefined;
+          s.history.hasMore = events.length == 10;
+          s.history.data = events;
           return s;
         });
       } catch (e) {
         update(s => {
-          s.events.refreshing = false;
-          s.events.error = "Failed to load events";
-          s.events.hasMore = false;
+          s.history.refreshing = false;
+          s.history.error = "Failed to load events";
+          s.history.hasMore = false;
           return s;
         });
       }
@@ -115,7 +115,7 @@ function createState() {
 
     loadMoreEvents: async (baby: string, page: number) => {
       update(s => {
-        s.events.loadingMore = true;
+        s.history.loadingMore = true;
         return s;
       });
 
@@ -125,9 +125,9 @@ function createState() {
       });
 
       update(s => {
-        s.events.loadingMore = false;
-        s.events.hasMore = events.length == 10;
-        s.events.data.push(...events);
+        s.history.loadingMore = false;
+        s.history.hasMore = events.length == 10;
+        s.history.data.push(...events);
         return s;
       });
     },
@@ -135,15 +135,15 @@ function createState() {
     createEvent: async (payload: any) => {
       const event = await api.createEvent(payload);
       update(s => {
-        if (s.events.data.length == 0) {
+        if (s.history.data.length == 0) {
           // the array is empty, always add
-          s.events.data.push(event);
-        } else if (event.at >= s.events.data[s.events.data.length - 1].at) {
+          s.history.data.push(event);
+        } else if (event.at >= s.history.data[s.history.data.length - 1].at) {
           // if this event is at least as new as the bottom of our list, then
           // add it to our data.  Otherwise wait until the user scrolls to it
           // before adding to our data.
-          const idx = binarySearch(s.events.data, event);
-          s.events.data.splice(idx, 0, event);
+          const idx = binarySearch(s.history.data, event);
+          s.history.data.splice(idx, 0, event);
         }
 
         // if this event is more recent than the latest event, update

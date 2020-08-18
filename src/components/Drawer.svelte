@@ -40,7 +40,7 @@
 </style>
 
 {#if open}
-  <div class="fixed inset-0 overflow-hidden">
+  <div class="fixed inset-0 overflow-hidden z-20">
     <div class="absolute inset-0 overflow-hidden">
       <!-- Background overlay -->
       <div
@@ -54,6 +54,7 @@
           <!-- Close button, show/hide based on slide-over state -->
           <div class="absolute top-0 left-0 -ml-8 pt-4 pr-2 sm:-ml-10 sm:pr-4">
             <button
+              type="button"
               on:click={close}
               aria-label="Close panel"
               class="text-gray-300 hover:text-white transition ease-in-out
@@ -88,7 +89,7 @@
               class="flex justify-end items-center min-h-16 border-t
               border-gray-300 shadow-sm space-x-4 px-4 sm:px-6">
               <slot name="footer">
-                <Button text="Cancel" on:click={cancel} />
+                <Button type="button" text="Cancel" on:click={cancel} />
                 <Button type={action} text="Create" color="blue" on:click={success} />
               </slot>
             </footer>

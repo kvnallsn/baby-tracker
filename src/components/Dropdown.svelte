@@ -9,7 +9,7 @@
   export let text: string;
 
   // work around to export class attribute
-  let clazz;
+  let clazz = undefined;
   export { clazz as class };
 
   // Component local variables / definitions

@@ -5,10 +5,11 @@
   import * as yup from "yup";
 
   // state imports
-  import { state, date } from "~/stores.ts";
+  import { state } from "~/stores.ts";
 
   // Models
-  import { Source, SourceDetail } from "~/api/event.ts";
+  import * as api from "~/api.ts";
+  import { Source, SourceDetail} from "~/api/event.ts";
 
   // Forms
 
@@ -16,7 +17,6 @@
   import DatePicker from "~/components/DatePicker.svelte";
   import Drawer from "~/components/Drawer.svelte";
   import RadioGroup from "~/components/RadioGroup.svelte";
-  /*import Text from "~/components/input/Text.svelte";*/
   import TextArea from "~/components/input/TextArea.svelte";
 
   // props
@@ -41,8 +41,6 @@
     { value: SourceDetail.Formula, text: "Formula" },
   ];
 
-  // reactive data
-
   // mutable data
   const {
     // observable state
@@ -58,21 +56,23 @@
     handleSubmit
   } = createForm({
     initialValues: {
+      at: new Date(),
       source: Source.Breast,
       detail: SourceDetail.Left,
       notes: "",
     },
 
     validationSchema: yup.object().shape({
+      at: yup.date().required(),
       source: yup.mixed().oneOf(['bottle', 'breast']).required(),
       detail: yup.mixed().oneOf(['left', 'right', 'both', 'pumped', 'formula']).required(),
       notes: yup.string(),
     }),
 
-    onSubmit: values => {
+    onSubmit: async values => {
       const payload = {
         baby_id: $state.babyId,
-        at: $date,
+        at: values.at,
         notes: values.notes,
         event: {
           type: "nursing",
@@ -81,11 +81,18 @@
         }
       };
 
-      state.createEvent(payload)
-        .then(() => dispatch('close'))
-        .catch(e => console.error(e));
+      try {
+        const event = await api.createEvent(payload);
+        dispatch('success', event);
+        dispatch('close');
+      } catch (error) {
+        dispatch('failed', error);
+      }
     }
   });
+
+  // reactive data
+  $: if (open) { $form.at = new Date() }
 </script>
 
 <style>
@@ -104,7 +111,7 @@
     <div class="h-full flex flex-col space-y-6 bg-white overflow-y-scroll">
       <div>
         <DatePicker
-          bind:value={$date} />
+          bind:value={$form.at} />
       </div>
 
       <RadioGroup
