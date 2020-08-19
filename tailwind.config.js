@@ -8,5 +8,8 @@ module.exports = {
         primary: colors.indigo,
       }
     }
-  }
+  },
+  future: {
+    removeDeprecatedGapUtilities: true,
+  },
 };

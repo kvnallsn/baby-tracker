@@ -16,7 +16,7 @@
 <style>
 </style>
 
-<div class="w-full grid grid-cols-1 row-gap-4 md:grid-cols-3 md:col-gap-16 md:row-gap-0">
+<div class="w-full grid grid-cols-1 gap-y-4 md:grid-cols-3 md:gap-x-16 md:gap-y-0">
   <Card title="Diaper Change">
     {#if data.diaper === undefined}
       No diaper changes found.
