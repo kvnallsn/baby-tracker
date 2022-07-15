@@ -32,7 +32,7 @@
     "rollup-plugin-root-import": "^1.0.0",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^7.0",
-    "svelte": "^3.0.0",
+    "svelte": "^3.49.0",
     "svelte-check": "^1.0.19",
     "svelte-forms-lib": "^1.2.0",
     "svelte-infinite-scroll": "^1.4.1",
